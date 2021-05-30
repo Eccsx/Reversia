@@ -1,0 +1,104 @@
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* board */
+  --board-color: rgb(77, 77, 77);
+  --cell-color: rgb(141, 187, 100);
+  --cell-side: 60px;
+  --cell-gap: 4px;
+  --cell-scooped-corner-radius: 5px;
+  /* piece */
+  --piece-diameter: 50px;
+  --black-piece-color: rgb(47, 54, 64);
+  --white-piece-color: rgb(245, 246, 250);
+  /* phantom piece */
+  --phantom-piece-diameter: 50px;
+  --black-phantom-piece-color: rgba(47, 54, 64, 0.5);
+  --white-phantom-piece-color: rgba(245, 246, 250, 0.5);
+  /* move indicator */
+  --move-indicator-diameter: 20px;
+  --move-indicator-color: rgb(45, 152, 218);
+}
+
+#reversi-board {
+  display: inline-flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  width: calc(var(--cell-side) * 8 + var(--cell-gap) * 7);
+  height: calc(var(--cell-side) * 8 + var(--cell-gap) * 7);
+  gap: var(--cell-gap);
+  padding: var(--cell-gap);
+  background-color: var(--board-color);
+}
+
+.board-cell {
+  background-color: var(--cell-color);
+  width: var(--cell-side);
+  height: var(--cell-side);
+  /* center piece within */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* scooped corners */
+#c3, #c7, #g3, #g7 {
+  background:
+    radial-gradient(circle at top left, transparent var(--cell-scooped-corner-radius), var(--cell-color) 0);
+}
+
+#b3, #b7, #f3, #f7 {
+  background:
+    radial-gradient(circle at top right, transparent var(--cell-scooped-corner-radius), var(--cell-color) 0);
+}
+
+#b2, #b6, #f2, #f6 {
+  background:
+    radial-gradient(circle at bottom right, transparent var(--cell-scooped-corner-radius), var(--cell-color) 0);
+}
+
+#c2, #c6, #g2, #g6 {
+  background:
+    radial-gradient(circle at bottom left, transparent var(--cell-scooped-corner-radius), var(--cell-color) 0);
+}
+
+/* piece */
+.white-piece {
+  background-color: var(--white-piece-color);
+  width: var(--piece-diameter);
+  height: var(--piece-diameter);
+  border-radius: 100%;
+}
+
+.black-piece {
+  background-color: var(--black-piece-color);
+  width: var(--piece-diameter);
+  height: var(--piece-diameter);
+  border-radius: 100%;
+}
+
+/* phantom piece */
+.phantom-white-piece {
+  background-color: var(--white-phantom-piece-color);
+  width: var(--phantom-piece-diameter);
+  height: var(--phantom-piece-diameter);
+  border-radius: 100%;
+}
+
+.phantom-black-piece {
+  background-color: var(--black-phantom-piece-color);
+  width: var(--phantom-piece-diameter);
+  height: var(--phantom-piece-diameter);
+  border-radius: 100%;
+}
+
+/* move indicator */
+.move-indicator {
+  background-color: var(--move-indicator-color);
+  width: var(--move-indicator-diameter);
+  height: var(--move-indicator-diameter);
+  border-radius: 100%;
+}
