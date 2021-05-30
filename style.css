@@ -1,0 +1,20 @@
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+#reversi-board {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  width: 428px;
+  height: 428px;
+  padding: 4px;
+  background-color: rgb(77, 77, 77);
+}
+
+.board-cell {
+  background-color: rgb(141, 187, 100);
+  width: 50px;
+  height: 50px;
+}
