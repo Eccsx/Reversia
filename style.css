@@ -4,16 +4,19 @@ html, body {
 }
 
 :root {
-  /* dimensions */
+  /* board */
+  --board-color: rgb(77, 77, 77);
+  --cell-color: rgb(141, 187, 100);
   --cell-side: 60px;
   --cell-gap: 4px;
   --cell-scooped-corner-radius: 5px;
+  /* piece */
   --piece-diameter: 50px;
-  /* colors */
-  --board-color: rgb(77, 77, 77);
-  --cell-color: rgb(141, 187, 100);
   --black-piece-color: rgb(47, 54, 64);
   --white-piece-color: rgb(245, 246, 250);
+  /* move indicator */
+  --move-indicator-diameter: 20px;
+  --move-indicator-color: rgb(75, 123, 236);
 }
 
 #reversi-board {
@@ -70,5 +73,13 @@ html, body {
   background-color: var(--black-piece-color);
   width: var(--piece-diameter);
   height: var(--piece-diameter);
+  border-radius: 100%;
+}
+
+/* move indicator */
+.move-indicator {
+  background-color: var(--move-indicator-color);
+  width: var(--move-indicator-diameter);
+  height: var(--move-indicator-diameter);
   border-radius: 100%;
 }
