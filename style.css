@@ -5,29 +5,36 @@ html, body {
 
 :root {
   /* dimensions */
-  --cell-side-length: 60px;
-  --cell-gap-length: 4px;
+  --cell-side: 60px;
+  --cell-gap: 4px;
   --cell-scooped-corner-radius: 5px;
+  --piece-diameter: 50px;
   /* colors */
   --board-color: rgb(77, 77, 77);
   --cell-color: rgb(141, 187, 100);
+  --black-piece-color: rgb(47, 54, 64);
+  --white-piece-color: rgb(245, 246, 250);
 }
 
 #reversi-board {
   display: inline-flex;
   flex-wrap: wrap;
   flex-direction: column;
-  width: calc(var(--cell-side-length) * 8 + var(--cell-gap-length) * 7);
-  height: calc(var(--cell-side-length) * 8 + var(--cell-gap-length) * 7);
-  gap: var(--cell-gap-length);
-  padding: var(--cell-gap-length);
+  width: calc(var(--cell-side) * 8 + var(--cell-gap) * 7);
+  height: calc(var(--cell-side) * 8 + var(--cell-gap) * 7);
+  gap: var(--cell-gap);
+  padding: var(--cell-gap);
   background-color: var(--board-color);
 }
 
 .board-cell {
   background-color: var(--cell-color);
-  width: var(--cell-side-length);
-  height: var(--cell-side-length);
+  width: var(--cell-side);
+  height: var(--cell-side);
+  /* center piece within */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* scooped corners */
@@ -49,4 +56,19 @@ html, body {
 #c2, #c6, #g2, #g6 {
   background:
     radial-gradient(circle at bottom left, transparent var(--cell-scooped-corner-radius), var(--cell-color) 0);
+}
+
+/* piece */
+.white-piece {
+  background-color: var(--white-piece-color);
+  width: var(--piece-diameter);
+  height: var(--piece-diameter);
+  border-radius: 100%;
+}
+
+.black-piece {
+  background-color: var(--black-piece-color);
+  width: var(--piece-diameter);
+  height: var(--piece-diameter);
+  border-radius: 100%;
 }
