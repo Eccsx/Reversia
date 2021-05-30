@@ -3,18 +3,50 @@ html, body {
   padding: 0;
 }
 
+:root {
+  /* dimensions */
+  --cell-side-length: 60px;
+  --cell-gap-length: 4px;
+  --cell-scooped-corner-radius: 5px;
+  /* colors */
+  --board-color: rgb(77, 77, 77);
+  --cell-color: rgb(141, 187, 100);
+}
+
 #reversi-board {
   display: inline-flex;
   flex-wrap: wrap;
-  gap: 4px;
-  width: 428px;
-  height: 428px;
-  padding: 4px;
-  background-color: rgb(77, 77, 77);
+  flex-direction: column;
+  width: calc(var(--cell-side-length) * 8 + var(--cell-gap-length) * 7);
+  height: calc(var(--cell-side-length) * 8 + var(--cell-gap-length) * 7);
+  gap: var(--cell-gap-length);
+  padding: var(--cell-gap-length);
+  background-color: var(--board-color);
 }
 
 .board-cell {
-  background-color: rgb(141, 187, 100);
-  width: 50px;
-  height: 50px;
+  background-color: var(--cell-color);
+  width: var(--cell-side-length);
+  height: var(--cell-side-length);
+}
+
+/* scooped corners */
+#c3, #c7, #g3, #g7 {
+  background:
+    radial-gradient(circle at top left, transparent var(--cell-scooped-corner-radius), var(--cell-color) 0);
+}
+
+#b3, #b7, #f3, #f7 {
+  background:
+    radial-gradient(circle at top right, transparent var(--cell-scooped-corner-radius), var(--cell-color) 0);
+}
+
+#b2, #b6, #f2, #f6 {
+  background:
+    radial-gradient(circle at bottom right, transparent var(--cell-scooped-corner-radius), var(--cell-color) 0);
+}
+
+#c2, #c6, #g2, #g6 {
+  background:
+    radial-gradient(circle at bottom left, transparent var(--cell-scooped-corner-radius), var(--cell-color) 0);
 }
