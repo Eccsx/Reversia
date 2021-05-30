@@ -14,9 +14,13 @@ html, body {
   --piece-diameter: 50px;
   --black-piece-color: rgb(47, 54, 64);
   --white-piece-color: rgb(245, 246, 250);
+  /* phantom piece */
+  --phantom-piece-diameter: 50px;
+  --black-phantom-piece-color: rgba(47, 54, 64, 0.5);
+  --white-phantom-piece-color: rgba(245, 246, 250, 0.5);
   /* move indicator */
   --move-indicator-diameter: 20px;
-  --move-indicator-color: rgb(75, 123, 236);
+  --move-indicator-color: rgb(45, 152, 218);
 }
 
 #reversi-board {
@@ -73,6 +77,21 @@ html, body {
   background-color: var(--black-piece-color);
   width: var(--piece-diameter);
   height: var(--piece-diameter);
+  border-radius: 100%;
+}
+
+/* phantom piece */
+.phantom-white-piece {
+  background-color: var(--white-phantom-piece-color);
+  width: var(--phantom-piece-diameter);
+  height: var(--phantom-piece-diameter);
+  border-radius: 100%;
+}
+
+.phantom-black-piece {
+  background-color: var(--black-phantom-piece-color);
+  width: var(--phantom-piece-diameter);
+  height: var(--phantom-piece-diameter);
   border-radius: 100%;
 }
 
