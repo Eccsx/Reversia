@@ -65,7 +65,7 @@ html, body {
     radial-gradient(circle at bottom left, transparent var(--cell-scooped-corner-radius), var(--cell-color) 0);
 }
 
-/* piece */
+/* pieces */
 .white-piece {
   background-color: var(--white-piece-color);
   width: var(--piece-diameter);
@@ -80,7 +80,7 @@ html, body {
   border-radius: 100%;
 }
 
-/* phantom piece */
+/* phantom pieces */
 .phantom-white-piece {
   background-color: var(--white-phantom-piece-color);
   width: var(--phantom-piece-diameter);
