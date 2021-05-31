@@ -1,8 +1,8 @@
 const State = {
-  'BLACK_TURN' : 0,
-  'WHITE_TURN' : 1,
-  'WIN' : 2,
-  'NO_MOVE' : 3
+  'BLACK_TURN': 0,
+  'WHITE_TURN': 1,
+  'WIN': 2,
+  'NO_MOVE': 3
 }
 
 const BLACK_PIECE_VALUE = 1;
@@ -48,7 +48,7 @@ export default class Game {
     const cell = document.getElementById(cellName);
 
     this.cleanCell(cell);
-    
+
     // piece element
     const piece = document.createElement('div');
     piece.className = (cellValue == BLACK_PIECE_VALUE) ? 'black-piece' : 'white-piece';
@@ -62,5 +62,35 @@ export default class Game {
 
   cleanCell(cell) {
     cell.textContent = null;
+  }
+
+  // Legal moves detection
+
+  getCellOppositeNeighbors(index, cellValue) {
+    // indixes
+    const i = index[0];
+    const j = index[1];
+
+    const neighbors = [];
+
+    // loop through neighbors
+    // res → https://stackoverflow.com/a/67758639
+    for (let x = -1; x < 2; x++) {
+      for (let y = -1; y < 2; y++) {
+        if (!(x == 0 && y == 0)) {
+          const nX = i + x;
+          const nY = j + y;
+          if ((nX >= 0 && nX < 8) && (nY >= 0 && nY < 8)) {
+            // store if opposite color
+            const v = this.board[nX][nY];
+            if (v != 0 && v != cellValue) {
+              neighbors.push([nX, nY]);
+            }
+          }
+        }
+      }
+    }
+
+    return neighbors;
   }
 }
