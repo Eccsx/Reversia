@@ -54,6 +54,7 @@ export default class Game {
     piece.className = (pieceValue == BLACK_PIECE_VALUE) ? 'black-piece' : 'white-piece';
 
     cell.appendChild(piece);
+    const index = this.cellCodeToIndex(cellCode);
   }
 
   indexToCellCode(row, column) {
