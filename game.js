@@ -37,27 +37,35 @@ export default class Game {
       row.forEach((cellValue, j) => {
         // check if piece
         if (cellValue != 0) {
-          this.placePiece([i, j], cellValue);
+          const cellCode = this.indexToCellCode(i, j); // Will make debug and readability easier
+          this.placePiece(cellCode, cellValue);
         }
       });
     });
   }
 
-  placePiece(index, cellValue) {
-    const cellName = this.indexToName(index);
-    const cell = document.getElementById(cellName);
+  placePiece(cellCode, pieceValue) {
+    const cell = document.getElementById(cellCode);
 
     this.cleanCell(cell);
 
     // piece element
     const piece = document.createElement('div');
-    piece.className = (cellValue == BLACK_PIECE_VALUE) ? 'black-piece' : 'white-piece';
+    piece.className = (pieceValue == BLACK_PIECE_VALUE) ? 'black-piece' : 'white-piece';
 
     cell.appendChild(piece);
   }
 
-  indexToName(index) {
-    return String.fromCharCode(97 + index[1]) + (index[0] + 1);
+  indexToCellCode(row, column) {
+    return String.fromCharCode(97 + column) + (row + 1);
+  }
+
+  cellCodeToIndex(cellCode) {
+    // retrieved letter code and number
+    const letterCode = cellCode.charCodeAt(0);
+    const number = cellCode[1];
+
+    return [number - 1, letterCode % 97];
   }
 
   cleanCell(cell) {
@@ -66,15 +74,16 @@ export default class Game {
 
   // Legal moves detection
 
-  getCellOppositeNeighbors(index, cellValue) {
-    // indixes
+  getCellOppositeNeighbors(cellCode, pieceValue) {
+    // retrieved cell grid indexes
+    const index = this.cellCodeToIndex(cellCode);
     const i = index[0];
     const j = index[1];
 
     const neighbors = [];
 
     // loop through neighbors
-    // res → https://stackoverflow.com/a/67758639
+    // optimization → https://stackoverflow.com/a/67758639
     for (let x = -1; x < 2; x++) {
       for (let y = -1; y < 2; y++) {
         if (!(x == 0 && y == 0)) {
@@ -83,8 +92,9 @@ export default class Game {
           if ((nX >= 0 && nX < 8) && (nY >= 0 && nY < 8)) {
             // store if opposite color
             const v = this.board[nX][nY];
-            if (v != 0 && v != cellValue) {
-              neighbors.push([nX, nY]);
+            if (v != 0 && v != pieceValue) {
+              const currentCellCode = this.indexToCellCode(nX, nY);
+              neighbors.push(currentCellCode);
             }
           }
         }
