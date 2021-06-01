@@ -5,6 +5,8 @@ const State = {
   'NO_MOVE': 3
 }
 
+const BOARD_LENGTH = 8;
+
 const BLACK_PIECE_VALUE = 1;
 const WHITE_PIECE_VALUE = 2;
 
@@ -27,6 +29,14 @@ export default class Game {
       [0, 0, 0, 0, 0, 0, 0, 0]
     ];
 
+    // surrounding cells
+    this.surroundingCells = new Set([
+      "c3", "c4", "c5", "c6",
+      "d3", "d6",
+      "e3", "e6",
+      "f3", "f4", "f5", "f6"
+    ]);
+
     // set turn to black
     this.state = State.BLACK_TURN;
   }
@@ -37,34 +47,37 @@ export default class Game {
       row.forEach((cellValue, j) => {
         // check if piece
         if (cellValue != 0) {
-          const cellCode = this.indexToCellCode(i, j); // Will make debug and readability easier
-          this.placePiece(cellCode, cellValue);
+          const cell = this.indexTocell(i, j);
+          this.placePiece(cell, cellValue);
         }
       });
     });
   }
 
-  placePiece(cellCode, pieceValue) {
-    const cell = document.getElementById(cellCode);
+  placePiece(cell, pieceValue) {
+    const cellElement = document.getElementById(cell);
 
-    this.cleanCell(cell);
+    this.cleanCell(cellElement);
 
     // piece element
     const piece = document.createElement('div');
     piece.className = (pieceValue == BLACK_PIECE_VALUE) ? 'black-piece' : 'white-piece';
 
-    cell.appendChild(piece);
-    const index = this.cellCodeToIndex(cellCode);
+    cellElement.appendChild(piece);
+
+    // update board
+    const index = this.cellToIndex(cell);
+    this.board[index[0]][index[1]] = pieceValue;
   }
 
-  indexToCellCode(row, column) {
+  indexTocell(row, column) {
     return String.fromCharCode(97 + column) + (row + 1);
   }
 
-  cellCodeToIndex(cellCode) {
+  cellToIndex(cell) {
     // retrieved letter code and number
-    const letterCode = cellCode.charCodeAt(0);
-    const number = cellCode[1];
+    const letterCode = cell[0].charCodeAt(0);
+    const number = cell[1];
 
     return [number - 1, letterCode % 97];
   }
@@ -73,13 +86,21 @@ export default class Game {
     cell.textContent = null;
   }
 
-  // Legal moves detection
+  getAllLegalMoves(pieceValue) {
+    const legalMoves = [];
+    for (const cell of this.surroundingCells) {
+      if (this.isCellLegalMove(cell, pieceValue)) {
+        legalMoves.push(cell);
+      }
+    }
+    return legalMoves;
+  }
 
-  getCellOppositeNeighbors(cellCode, pieceValue) {
+  isCellLegalMove(cell, pieceValue) {
     // retrieved cell grid indexes
-    const index = this.cellCodeToIndex(cellCode);
-    const i = index[0];
-    const j = index[1];
+    const cellIndex = this.cellToIndex(cell);
+    const i = parseInt(cellIndex[0]);
+    const j = parseInt(cellIndex[1]);
 
     const neighbors = [];
 
@@ -90,18 +111,61 @@ export default class Game {
         if (!(x == 0 && y == 0)) {
           const nX = i + x;
           const nY = j + y;
-          if ((nX >= 0 && nX < 8) && (nY >= 0 && nY < 8)) {
-            // store if opposite color
+
+          if ((nX >= 0 && nX < BOARD_LENGTH) && (nY >= 0 && nY < BOARD_LENGTH)) {
+            // check if opposite color piece
             const v = this.board[nX][nY];
             if (v != 0 && v != pieceValue) {
-              const currentCellCode = this.indexToCellCode(nX, nY);
-              neighbors.push(currentCellCode);
+              // check if a sandwich is possible
+              if (this.isSandwich(cellIndex, pieceValue, [x, y])) {
+                return true
+              }
             }
           }
         }
       }
     }
 
-    return neighbors;
+    return false;
+  }
+
+  isSandwich(cellIndex, pieceValue, direction) {
+    const nextPiecesIndexes = this.getAllPiecesIndexesTowards(cellIndex, direction);
+
+    // loop through until same color piece
+    for (const pieceIndex of nextPiecesIndexes) {
+      if (this.board[pieceIndex[0]][pieceIndex[1]] == pieceValue) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  getAllPiecesIndexesTowards(cellIndex, direction) {
+    let i = cellIndex[0];
+    let j = cellIndex[1];
+
+    const dX = direction[0];
+    const dY = direction[1];
+
+    const cellsIndexes = [];
+    // step forward until its reach border
+    while (
+      0 < i < BOARD_LENGTH &&
+      0 < j < BOARD_LENGTH
+    ) {
+      // move forwards
+      i += dX;
+      j += dY;
+      // check cell has a piece
+      if (this.board[i][j] != 0) {
+        cellsIndexes.push([i, j]);
+      } else {
+        break;
+      }
+    }
+
+    return cellsIndexes;
   }
 }
