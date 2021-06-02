@@ -9,7 +9,7 @@ html, body {
   --cell-color: rgb(141, 187, 100);
   --cell-side: 60px;
   --cell-gap: 4px;
-  --cell-scooped-corner-radius: 5px;
+  --cell-scooped-corner: 20%;
   /* piece */
   --piece-diameter: 50px;
   --black-piece-color: rgb(47, 54, 64);
@@ -46,23 +46,19 @@ html, body {
 
 /* scooped corners */
 #c3, #c7, #g3, #g7 {
-  background:
-    radial-gradient(circle at top left, transparent var(--cell-scooped-corner-radius), var(--cell-color) 0);
+  border-top-left-radius: var(--cell-scooped-corner);
 }
 
 #b3, #b7, #f3, #f7 {
-  background:
-    radial-gradient(circle at top right, transparent var(--cell-scooped-corner-radius), var(--cell-color) 0);
+  border-top-right-radius: var(--cell-scooped-corner);
 }
 
 #b2, #b6, #f2, #f6 {
-  background:
-    radial-gradient(circle at bottom right, transparent var(--cell-scooped-corner-radius), var(--cell-color) 0);
+  border-bottom-right-radius: var(--cell-scooped-corner);
 }
 
 #c2, #c6, #g2, #g6 {
-  background:
-    radial-gradient(circle at bottom left, transparent var(--cell-scooped-corner-radius), var(--cell-color) 0);
+  border-bottom-left-radius: var(--cell-scooped-corner);
 }
 
 /* pieces */
@@ -101,4 +97,8 @@ html, body {
   width: var(--move-indicator-diameter);
   height: var(--move-indicator-diameter);
   border-radius: 100%;
+}
+
+.legal:hover {
+  background-color: blueviolet;
 }
