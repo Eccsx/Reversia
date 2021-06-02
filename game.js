@@ -47,7 +47,7 @@ export default class Game {
       row.forEach((cellValue, j) => {
         // check if piece
         if (cellValue != 0) {
-          const cell = this.indexTocell(i, j);
+          const cell = this.indexToCell(i, j);
           this.placePiece(cell, cellValue);
         }
       });
@@ -68,9 +68,44 @@ export default class Game {
     // update board
     const index = this.cellToIndex(cell);
     this.board[index[0]][index[1]] = pieceValue;
+
+    // update surrounding cells
+    this.surroundingCells.delete(cell);
+    for (const emptyCell of this.getCellEmptyNeighbors(cell)) {
+      this.surroundingCells.add(emptyCell);
+    }
   }
 
-  indexTocell(row, column) {
+  getCellEmptyNeighbors(cell) {
+    // retrieved cell grid indexes
+    const cellIndex = this.cellToIndex(cell);
+    const i = parseInt(cellIndex[0]);
+    const j = parseInt(cellIndex[1]);
+
+    const neighbors = [];
+
+    // loop through neighbors
+    // optimization → https://stackoverflow.com/a/67758639
+    for (let x = -1; x < 2; x++) {
+      for (let y = -1; y < 2; y++) {
+        if (!(x == 0 && y == 0)) {
+          const nX = i + x;
+          const nY = j + y;
+
+          if ((nX >= 0 && nX < BOARD_LENGTH) && (nY >= 0 && nY < BOARD_LENGTH)) {
+            // check if cell is empty
+            if (this.board[nX][nY] == 0) {
+              neighbors.push(this.indexToCell(nX, nY));
+            }
+          }
+        }
+      }
+    }
+
+    return neighbors;
+  }
+
+  indexToCell(row, column) {
     return String.fromCharCode(97 + column) + (row + 1);
   }
 
