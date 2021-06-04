@@ -9,10 +9,4 @@ console.log(game);
 const black = 1;
 const white = 2;
 
-
-game.placePiece("d3", black);
-game.placePiece("e3", white);
-game.placePiece("f4", white);
-game.state = black - 1;
-
-game.displayLegalMoves();
+// game.placePiece("e3", white);

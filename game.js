@@ -1,4 +1,4 @@
-const State = {
+const STATE = {
   'BLACK_TURN': 0,
   'WHITE_TURN': 1,
   'WIN': 2,
@@ -7,16 +7,26 @@ const State = {
 
 const BOARD_LENGTH = 8;
 
-const BLACK_PIECE_VALUE = 1;
-const WHITE_PIECE_VALUE = 2;
+const BLACK_PIECE = {
+  value: 1,
+  element: document.createElement('div')
+}
+
+const WHITE_PIECE = {
+  value: 2,
+  element: document.createElement('div')
+}
 
 export default class Game {
   constructor() {
     this.resetGame();
-    this.updateUI();
   }
 
   resetGame() {
+    // setup pieces element
+    BLACK_PIECE.element.classList.add('black-piece')
+    WHITE_PIECE.element.classList.add('white-piece')
+
     // clean board
     this.board = [
       [0, 0, 0, 0, 0, 0, 0, 0],
@@ -29,51 +39,56 @@ export default class Game {
       [0, 0, 0, 0, 0, 0, 0, 0]
     ];
 
+    document.getElementById('e4').appendChild(BLACK_PIECE.element.cloneNode());
+    document.getElementById('d5').appendChild(BLACK_PIECE.element.cloneNode());
+    document.getElementById('e5').appendChild(WHITE_PIECE.element.cloneNode());
+    document.getElementById('d4').appendChild(WHITE_PIECE.element.cloneNode());
+
     // surrounding cells
     this.surroundingCells = new Set([
-      "c3", "c4", "c5", "c6",
-      "d3", "d6",
-      "e3", "e6",
-      "f3", "f4", "f5", "f6"
+      'c3', 'c4', 'c5', 'c6',
+      'd3', 'd6',
+      'e3', 'e6',
+      'f3', 'f4', 'f5', 'f6'
     ]);
 
     // set turn to black
-    this.state = State.BLACK_TURN;
+    this.state = STATE.BLACK_TURN;
+
+    // show first legal moves
+    this.displayLegalMoves();
   }
 
-  updateUI() {
-    // display pieces
-    this.board.forEach((row, i) => {
-      row.forEach((cellValue, j) => {
-        // check if piece
-        if (cellValue != 0) {
-          const cell = this.indexToCell(i, j);
-          this.placePiece(cell, cellValue);
-        }
-      });
-    });
-  }
-
-  placePiece(cell, pieceValue) {
+  placePiece(cell) {
+    // retrieve cell element
     const cellElement = document.getElementById(cell);
 
+    // remove all inside element
     this.cleanCell(cellElement);
 
-    // piece element
-    const piece = document.createElement('div');
-    piece.className = (pieceValue == BLACK_PIECE_VALUE) ? 'black-piece' : 'white-piece';
-
-    cellElement.appendChild(piece);
+    // add piece
+    if (this.state == STATE.BLACK_TURN) {
+      cellElement.appendChild(BLACK_PIECE.element.cloneNode());
+    } else {
+      cellElement.appendChild(WHITE_PIECE.element.cloneNode());
+    }
 
     // update board
     const index = this.cellToIndex(cell);
-    this.board[index[0]][index[1]] = pieceValue;
+    this.board[index[0]][index[1]] =
+      (this.state == STATE.BLACK_TURN) ? BLACK_PIECE.value : WHITE_PIECE.value;
 
     // update surrounding cells
     this.surroundingCells.delete(cell);
-    for (const emptyCell of this.getCellEmptyNeighbors(cell)) {
-      this.surroundingCells.add(emptyCell);
+    for (const surroundingCell of this.getCellEmptyNeighbors(cell)) {
+      this.surroundingCells.add(surroundingCell);
     }
+
+    // switch player turn
+    this.state = (this.state == STATE.BLACK_TURN) ? STATE.WHITE_TURN : STATE.BLACK_TURN;
+
+    // update move indicators
+    this.displayLegalMoves();
   }
 
   getCellEmptyNeighbors(cell) {
@@ -118,7 +133,9 @@ export default class Game {
   }
 
   cleanCell(cell) {
+    cell.classList.remove('legal');
     cell.textContent = null;
+    cell.onmousedown = null;
   }
 
   getAllLegalMoves(pieceValue) {
@@ -153,6 +170,7 @@ export default class Game {
             if (v != 0 && v != pieceValue) {
               // check if a sandwich is possible
               if (this.isSandwich(cellIndex, pieceValue, [x, y])) {
+
                 return true
               }
             }
@@ -185,14 +203,13 @@ export default class Game {
     const dY = direction[1];
 
     const cellsIndexes = [];
+
+    let c = 0;
     // step forward until its reach border
     while (
-      0 < i < BOARD_LENGTH &&
-      0 < j < BOARD_LENGTH
+      (0 < (i += dX) && i < BOARD_LENGTH) &&
+      (0 < (j += dY) && j < BOARD_LENGTH)
     ) {
-      // move forwards
-      i += dX;
-      j += dY;
       // check cell has a piece
       if (this.board[i][j] != 0) {
         cellsIndexes.push([i, j]);
@@ -207,7 +224,7 @@ export default class Game {
   displayLegalMoves() {
     this.cleanPreviousLegalMoves();
 
-    const pieceValue = (this.state == State.BLACK_TURN) ? BLACK_PIECE_VALUE : WHITE_PIECE_VALUE;
+    const pieceValue = (this.state == STATE.BLACK_TURN) ? BLACK_PIECE.value : WHITE_PIECE.value;
     const legalMoves = this.getAllLegalMoves(pieceValue);
 
     for (const legalMove of legalMoves) {
@@ -217,21 +234,30 @@ export default class Game {
 
       // phantom piece
       const phantomPiece = document.createElement('div');
-      phantomPiece.className = (pieceValue == BLACK_PIECE_VALUE) ? 'phantom-black-piece' : 'phantom-white-piece';
+      phantomPiece.className = (pieceValue == BLACK_PIECE.value) ? 'phantom-black-piece' : 'phantom-white-piece';
 
+      // add element to cell
       const cell = document.getElementById(legalMove);
       cell.classList.add('legal');
       cell.appendChild(moveIndicator);
       cell.append(phantomPiece);
+
+      // allow cell to place piece
+      cell.onmousedown = () => {
+        this.placePiece(legalMove)
+      };
     }
   }
 
   cleanPreviousLegalMoves() {
-    const previousLegalMoves = document.getElementsByClassName('legal_move');
-    
-    for (const previousLegalMove of previousLegalMoves) {
-      previousLegalMove.classList.remove('legal');
-      previousLegalMove.textContent = null;
+    const previousLegalMoves = document.getElementsByClassName('legal');
+
+    // solve for..of issue
+    // res -> https://stackoverflow.com/a/39042507/11060940
+    while (previousLegalMoves.length) {
+      previousLegalMoves[0].textContent = null;
+      previousLegalMoves[0].onmousedown = null;
+      previousLegalMoves[0].classList.remove('legal');
     }
   }
 }
