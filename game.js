@@ -89,6 +89,9 @@ export default class Game {
 
     // update move indicators
     this.displayLegalMoves();
+
+    // ! DEBUG
+    console.log(this.surroundingCells);
   }
 
   getCellEmptyNeighbors(cell) {
@@ -156,6 +159,9 @@ export default class Game {
 
     const neighbors = [];
 
+    console.log("-------------------");
+    console.log(cell + ": " + cellIndex);
+
     // loop through neighbors
     // optimization → https://stackoverflow.com/a/67758639
     for (let x = -1; x < 2; x++) {
@@ -164,13 +170,15 @@ export default class Game {
           const nX = i + x;
           const nY = j + y;
 
+          console.log(" " + nX + " " + nY + " -> " + this.indexToCell(nX, nY));
+
           if ((nX >= 0 && nX < BOARD_LENGTH) && (nY >= 0 && nY < BOARD_LENGTH)) {
             // check if opposite color piece
             const v = this.board[nX][nY];
             if (v != 0 && v != pieceValue) {
               // check if a sandwich is possible
               if (this.isSandwich(cellIndex, pieceValue, [x, y])) {
-
+                console.log(" valid");
                 return true
               }
             }
@@ -178,12 +186,15 @@ export default class Game {
         }
       }
     }
-
+    console.log(" non-valid");
     return false;
   }
 
   isSandwich(cellIndex, pieceValue, direction) {
     const nextPiecesIndexes = this.getAllPiecesIndexesTowards(cellIndex, direction);
+
+    console.log(" toward dir: " + direction + " -> " + this.indexToCell(cellIndex[0] + direction[0], cellIndex[1] + direction[1]))
+    console.log(" toward: " + nextPiecesIndexes);
 
     // loop through until same color piece
     for (const pieceIndex of nextPiecesIndexes) {
@@ -204,12 +215,28 @@ export default class Game {
 
     const cellsIndexes = [];
 
+    console.log("  " + this.indexToCell(i, j) + " [" + dX + "," + dY + "]");
+    console.log("  start: " + i + " " + j);
+
+    console.log(" 0 < " + i + " < " + BOARD_LENGTH);
+    console.log(" 0 < " + j + " < " + BOARD_LENGTH);
+
     let c = 0;
     // step forward until its reach border
     while (
-      (0 < (i += dX) && i < BOARD_LENGTH) &&
-      (0 < (j += dY) && j < BOARD_LENGTH)
+      (0 <= (i += dX) && i < BOARD_LENGTH) &&
+      (0 <= (j += dY) && j < BOARD_LENGTH)
     ) {
+
+      console.log("  step " + c++ + ": " + i + " " + j);
+      console.log(" 0 < " + i + " < " + BOARD_LENGTH);
+      console.log(" 0 < " + j + " < " + BOARD_LENGTH);
+      const cI = (0 < i && i < BOARD_LENGTH);
+      const cJ = (0 < j && j < BOARD_LENGTH);
+      // console.log("   cond i: " + cI);
+      // console.log("   cond j: " + cJ);
+      console.log("   cond &: " + (cI && cJ));
+
       // check cell has a piece
       if (this.board[i][j] != 0) {
         cellsIndexes.push([i, j]);
