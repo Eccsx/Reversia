@@ -203,4 +203,28 @@ export default class Game {
 
     return cellsIndexes;
   }
+
+  displayLegalMoves() {
+    this.cleanPreviousLegalMoves();
+
+    const pieceValue = (this.state == State.BLACK_TURN) ? BLACK_PIECE_VALUE : WHITE_PIECE_VALUE;
+    const legalMoves = this.getAllLegalMoves(pieceValue);
+
+    for (const legalMove of legalMoves) {
+      // add move indicator element
+      const moveIndicator = document.createElement('div');
+      moveIndicator.className = 'move-indicator';
+
+      document.getElementById(legalMove).appendChild(moveIndicator);
+    }
+  }
+
+  cleanPreviousLegalMoves() {
+    const previousLegalMoves = document.getElementsByClassName('legal_move');
+    
+    for (const previousLegalMove of previousLegalMoves) {
+      previousLegalMove.className = "";
+      previousLegalMove.textContent = null;
+    }
+  }
 }

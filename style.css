@@ -91,7 +91,6 @@ html, body {
   border-radius: 100%;
 }
 
-/* move indicator */
 .move-indicator {
   background-color: var(--move-indicator-color);
   width: var(--move-indicator-diameter);
