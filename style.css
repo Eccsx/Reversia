@@ -82,6 +82,7 @@ html, body {
   width: var(--phantom-piece-diameter);
   height: var(--phantom-piece-diameter);
   border-radius: 100%;
+  display: none;
 }
 
 .phantom-black-piece {
@@ -89,6 +90,7 @@ html, body {
   width: var(--phantom-piece-diameter);
   height: var(--phantom-piece-diameter);
   border-radius: 100%;
+  display: none;
 }
 
 .move-indicator {
@@ -98,6 +100,12 @@ html, body {
   border-radius: 100%;
 }
 
-.legal:hover {
-  background-color: blueviolet;
+.legal:hover > .move-indicator{
+  display: none;
+}
+
+.legal:hover > .phantom-black-piece,
+.legal:hover > .phantom-white-piece
+{
+  display: block;
 }

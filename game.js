@@ -211,11 +211,18 @@ export default class Game {
     const legalMoves = this.getAllLegalMoves(pieceValue);
 
     for (const legalMove of legalMoves) {
-      // add move indicator element
+      // move indicator
       const moveIndicator = document.createElement('div');
       moveIndicator.className = 'move-indicator';
 
-      document.getElementById(legalMove).appendChild(moveIndicator);
+      // phantom piece
+      const phantomPiece = document.createElement('div');
+      phantomPiece.className = (pieceValue == BLACK_PIECE_VALUE) ? 'phantom-black-piece' : 'phantom-white-piece';
+
+      const cell = document.getElementById(legalMove);
+      cell.classList.add('legal');
+      cell.appendChild(moveIndicator);
+      cell.append(phantomPiece);
     }
   }
 
@@ -223,7 +230,7 @@ export default class Game {
     const previousLegalMoves = document.getElementsByClassName('legal_move');
     
     for (const previousLegalMove of previousLegalMoves) {
-      previousLegalMove.className = "";
+      previousLegalMove.classList.remove('legal');
       previousLegalMove.textContent = null;
     }
   }
