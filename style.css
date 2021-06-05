@@ -24,6 +24,11 @@ body {
   --move-indicator-color: rgb(45, 152, 218);
 }
 
+#board-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
 #reversi-board {
   display: inline-flex;
   flex-wrap: wrap;
@@ -120,4 +125,21 @@ body {
 .legal:hover>.phantom-black-piece,
 .legal:hover>.phantom-white-piece {
   display: block;
+}
+
+/* proportation pieces bar */
+#proportion-bar {
+  border: none;
+  padding: 0px var(--cell-gap) var(--cell-gap) var(--cell-gap);
+  width: calc(var(--cell-side) * 8 + var(--cell-gap) * 9);
+  height: calc(var(--cell-side) / 3);
+  background-color: var(--board-color);
+}
+
+#proportion-bar::-webkit-progress-value {
+  background-color: var(--black-piece-color);
+}
+
+#proportion-bar::-webkit-progress-bar {
+  background-color: var(--white-piece-color);
 }
