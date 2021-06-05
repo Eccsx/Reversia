@@ -55,7 +55,10 @@ export default class Game {
     // set turn to black
     this.state = STATE.BLACK_TURN;
 
-    // show first legal moves
+    // all possibles sandwiches per legal move
+    this.sandwiches = [];
+
+    // compute and show first legal moves
     this.displayLegalMoves();
   }
 
@@ -66,14 +69,32 @@ export default class Game {
     // remove all inside element
     this.cleanCell(cellElement);
 
-    // add piece
+    // add piece element
     if (this.state == STATE.BLACK_TURN) {
       cellElement.appendChild(BLACK_PIECE.element.cloneNode());
     } else {
       cellElement.appendChild(WHITE_PIECE.element.cloneNode());
     }
 
-    // update board
+    // flip pieces in sandwich
+    for (const sandwich of this.sandwiches[cell]) {
+      for (const piece of sandwich) {
+        const pieceElement = document.getElementById(piece);
+        const pieceIndex = this.cellToIndex(piece);
+
+        this.cleanCell(pieceElement);
+
+        if (this.state == STATE.BLACK_TURN) {
+          pieceElement.appendChild(BLACK_PIECE.element.cloneNode());
+          this.board[pieceIndex[0]][pieceIndex[1]] = BLACK_PIECE.value;
+        } else {
+          pieceElement.appendChild(WHITE_PIECE.element.cloneNode());
+          this.board[pieceIndex[0]][pieceIndex[1]] = WHITE_PIECE.value;
+        }
+      }
+    }
+
+    // add piece value in board
     const index = this.cellToIndex(cell);
     this.board[index[0]][index[1]] =
       (this.state == STATE.BLACK_TURN) ? BLACK_PIECE.value : WHITE_PIECE.value;
@@ -87,11 +108,8 @@ export default class Game {
     // switch player turn
     this.state = (this.state == STATE.BLACK_TURN) ? STATE.WHITE_TURN : STATE.BLACK_TURN;
 
-    // update move indicators
+    // update legal moves and sandwiches
     this.displayLegalMoves();
-
-    // ! DEBUG
-    console.log(this.surroundingCells);
   }
 
   getCellEmptyNeighbors(cell) {
@@ -135,10 +153,10 @@ export default class Game {
     return [number - 1, letterCode % 97];
   }
 
-  cleanCell(cell) {
-    cell.classList.remove('legal');
-    cell.textContent = null;
-    cell.onmousedown = null;
+  cleanCell(cellElement) {
+    cellElement.classList.remove('legal');
+    cellElement.textContent = null;
+    cellElement.onmousedown = null;
   }
 
   getAllLegalMoves(pieceValue) {
@@ -157,10 +175,8 @@ export default class Game {
     const i = parseInt(cellIndex[0]);
     const j = parseInt(cellIndex[1]);
 
-    const neighbors = [];
-
-    console.log("-------------------");
-    console.log(cell + ": " + cellIndex);
+    let isSandwich = false;
+    const arraySandwiches = []
 
     // loop through neighbors
     // optimization → https://stackoverflow.com/a/67758639
@@ -170,40 +186,44 @@ export default class Game {
           const nX = i + x;
           const nY = j + y;
 
-          console.log(" " + nX + " " + nY + " -> " + this.indexToCell(nX, nY));
-
           if ((nX >= 0 && nX < BOARD_LENGTH) && (nY >= 0 && nY < BOARD_LENGTH)) {
             // check if opposite color piece
             const v = this.board[nX][nY];
             if (v != 0 && v != pieceValue) {
-              // check if a sandwich is possible
-              if (this.isSandwich(cellIndex, pieceValue, [x, y])) {
-                console.log(" valid");
-                return true
+              // check if sandwiches are possible
+              const piecesInSandwich = this.getSandwich(cellIndex, pieceValue, [x, y]);
+              if (piecesInSandwich != null) {
+                arraySandwiches.push(piecesInSandwich);
+                isSandwich = true;
               }
             }
           }
         }
       }
     }
-    console.log(" non-valid");
-    return false;
+
+    // store sandwiches if any
+    if (isSandwich) {
+      this.sandwiches[cell] = arraySandwiches;
+    }
+
+    return isSandwich;
   }
 
-  isSandwich(cellIndex, pieceValue, direction) {
+  getSandwich(cellIndex, pieceValue, direction) {
     const nextPiecesIndexes = this.getAllPiecesIndexesTowards(cellIndex, direction);
 
-    console.log(" toward dir: " + direction + " -> " + this.indexToCell(cellIndex[0] + direction[0], cellIndex[1] + direction[1]))
-    console.log(" toward: " + nextPiecesIndexes);
+    const piecesBetween = [];
 
     // loop through until same color piece
     for (const pieceIndex of nextPiecesIndexes) {
       if (this.board[pieceIndex[0]][pieceIndex[1]] == pieceValue) {
-        return true;
+        return piecesBetween;
       }
+      piecesBetween.push(this.indexToCell(pieceIndex[0], pieceIndex[1]));
     }
 
-    return false;
+    return null;
   }
 
   getAllPiecesIndexesTowards(cellIndex, direction) {
@@ -215,28 +235,11 @@ export default class Game {
 
     const cellsIndexes = [];
 
-    console.log("  " + this.indexToCell(i, j) + " [" + dX + "," + dY + "]");
-    console.log("  start: " + i + " " + j);
-
-    console.log(" 0 < " + i + " < " + BOARD_LENGTH);
-    console.log(" 0 < " + j + " < " + BOARD_LENGTH);
-
-    let c = 0;
     // step forward until its reach border
     while (
       (0 <= (i += dX) && i < BOARD_LENGTH) &&
       (0 <= (j += dY) && j < BOARD_LENGTH)
     ) {
-
-      console.log("  step " + c++ + ": " + i + " " + j);
-      console.log(" 0 < " + i + " < " + BOARD_LENGTH);
-      console.log(" 0 < " + j + " < " + BOARD_LENGTH);
-      const cI = (0 < i && i < BOARD_LENGTH);
-      const cJ = (0 < j && j < BOARD_LENGTH);
-      // console.log("   cond i: " + cI);
-      // console.log("   cond j: " + cJ);
-      console.log("   cond &: " + (cI && cJ));
-
       // check cell has a piece
       if (this.board[i][j] != 0) {
         cellsIndexes.push([i, j]);
