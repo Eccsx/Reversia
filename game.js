@@ -44,6 +44,10 @@ export default class Game {
     document.getElementById('e5').appendChild(WHITE_PIECE.element.cloneNode());
     document.getElementById('d4').appendChild(WHITE_PIECE.element.cloneNode());
 
+    // piece counters
+    this.blackPiecesCount = 2;
+    this.whitePiecesCount = 2;
+
     // surrounding cells
     this.surroundingCells = new Set([
       'c3', 'c4', 'c5', 'c6',
@@ -72,8 +76,10 @@ export default class Game {
     // add piece element
     if (this.state == STATE.BLACK_TURN) {
       cellElement.appendChild(BLACK_PIECE.element.cloneNode());
+      this.blackPiecesCount++;
     } else {
       cellElement.appendChild(WHITE_PIECE.element.cloneNode());
+      this.whitePiecesCount++;
     }
 
     // flip pieces in sandwich
@@ -87,9 +93,15 @@ export default class Game {
         if (this.state == STATE.BLACK_TURN) {
           pieceElement.appendChild(BLACK_PIECE.element.cloneNode());
           this.board[pieceIndex[0]][pieceIndex[1]] = BLACK_PIECE.value;
+          // update piece counters
+          this.blackPiecesCount++;
+          this.whitePiecesCount--;
         } else {
           pieceElement.appendChild(WHITE_PIECE.element.cloneNode());
           this.board[pieceIndex[0]][pieceIndex[1]] = WHITE_PIECE.value;
+          // update piece counters
+          this.whitePiecesCount++;
+          this.blackPiecesCount--;
         }
       }
     }
@@ -98,6 +110,16 @@ export default class Game {
     const index = this.cellToIndex(cell);
     this.board[index[0]][index[1]] =
       (this.state == STATE.BLACK_TURN) ? BLACK_PIECE.value : WHITE_PIECE.value;
+
+    // check victory
+    if (this.blackPiecesCount == 0 || this.whitePiecesCount == 0) {
+      // ! DEBUG
+      console.log("Victory");
+
+      this.cleanPreviousLegalMoves();
+      this.state = STATE.WHITE_TURN;
+      return;
+    }
 
     // update surrounding cells
     this.surroundingCells.delete(cell);

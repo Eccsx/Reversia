@@ -127,8 +127,8 @@ body {
   display: block;
 }
 
-/* proportation pieces bar */
-#proportion-bar {
+/* evaluation pieces bar */
+#evaluation-bar {
   border: none;
   padding: 0px var(--cell-gap) var(--cell-gap) var(--cell-gap);
   width: calc(var(--cell-side) * 8 + var(--cell-gap) * 9);
@@ -136,10 +136,10 @@ body {
   background-color: var(--board-color);
 }
 
-#proportion-bar::-webkit-progress-value {
+#evaluation-bar::-webkit-progress-value {
   background-color: var(--black-piece-color);
 }
 
-#proportion-bar::-webkit-progress-bar {
+#evaluation-bar::-webkit-progress-bar {
   background-color: var(--white-piece-color);
 }
