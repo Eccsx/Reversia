@@ -1,8 +1,9 @@
 const STATE = {
   'BLACK_TURN': 0,
   'WHITE_TURN': 1,
-  'WIN': 2,
-  'NO_MOVE': 3
+  'WIN_BLACK': 2,
+  'WIN_WHITE': 3,
+  'NO_MOVE': 4
 }
 
 const BOARD_LENGTH = 8;
@@ -16,6 +17,15 @@ const WHITE_PIECE = {
   value: 2,
   element: document.createElement('div')
 }
+
+let previousNoMoveCount = 0;
+let isDraw = false;
+
+// * TEST
+
+
+
+// * END TEST
 
 export default class Game {
   constructor() {
@@ -112,12 +122,8 @@ export default class Game {
       (this.state == STATE.BLACK_TURN) ? BLACK_PIECE.value : WHITE_PIECE.value;
 
     // check victory
-    if (this.blackPiecesCount == 0 || this.whitePiecesCount == 0) {
-      // ! DEBUG
-      console.log("Victory");
-
-      this.cleanPreviousLegalMoves();
-      this.state = STATE.WHITE_TURN;
+    if (this.isVictory()) {
+      this.endGame();
       return;
     }
 
@@ -132,6 +138,61 @@ export default class Game {
 
     // update legal moves and sandwiches
     this.displayLegalMoves();
+
+    // check draw
+    this.checkDraw();
+  }
+
+  endGame() {
+    this.cleanPreviousLegalMoves();
+    console.log("Victory " + ((this.state == STATE.WIN_BLACK) ? "BLACK" : "WHITE"));
+    return
+  }
+
+  checkDraw() {
+    if (previousNoMoveCount == 2) {
+      this.endGame();
+      return;
+    }
+    else if (this.sandwiches.length == 0) {
+      previousNoMoveCount++;
+  
+      // switch player turn
+      this.state = (this.state == STATE.BLACK_TURN) ? STATE.WHITE_TURN : STATE.BLACK_TURN;
+  
+      // update legal moves and sandwiches
+      this.displayLegalMoves();
+      
+      // recursion
+      this.checkDraw();
+    }
+    else {
+      previousNoMoveCount = 0;
+    }
+  
+    return;
+  }
+
+  isVictory() {
+    // white
+    if (this.blackPiecesCount == 0) {
+      this.state = STATE.WIN_WHITE;
+      return true;
+    }
+
+    // black
+    if (this.whitePiecesCount == 0) {
+      this.state = STATE.WIN_BLACK;
+      return true;
+    }
+
+    // draw
+    if ((this.blackPiecesCount + this.whitePiecesCount) == 64 || isDraw) {
+      this.state = (this.blackPiecesCount > this.whitePiecesCount) ? STATE.WIN_BLACK : STATE.WIN_WHITE;
+      return true;
+    }
+
+    return false;
   }
 
   getCellEmptyNeighbors(cell) {
@@ -182,6 +243,9 @@ export default class Game {
   }
 
   getAllLegalMoves(pieceValue) {
+    // clean sandwich array
+    this.sandwiches = [];
+
     const legalMoves = [];
     for (const cell of this.surroundingCells) {
       if (this.isCellLegalMove(cell, pieceValue)) {
@@ -227,6 +291,8 @@ export default class Game {
     // store sandwiches if any
     if (isSandwich) {
       this.sandwiches[cell] = arraySandwiches;
+      // increment array length
+      this.sandwiches.length++;
     }
 
     return isSandwich;
