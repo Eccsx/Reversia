@@ -378,4 +378,13 @@ export default class Game {
       previousLegalMoves[0].classList.remove('legal');
     }
   }
+
+  loadTranscript(matchString) {
+    // reset game
+    this.resetGame();
+    // split string in segment of two characters
+    for (const cell of matchString.match(/.{1,2}/g)) {
+      this.placePiece(cell);
+    }
+  }
 }
