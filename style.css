@@ -21,7 +21,12 @@ body {
   --white-phantom-piece-color: rgba(245, 246, 250, 0.5);
   /* move indicator */
   --move-indicator-diameter: 15px;
-  --move-indicator-color: rgb(45, 152, 218);
+  --move-indicator-color: rgb(159, 100, 187);
+  /* strategy layout */
+  --corner-cell-color: rgb(187, 100, 100);
+  --extremity-cell-color: rgb(187, 146, 100);
+  --border-cell-color: rgb(100, 116, 187);
+
 }
 
 #board-wrapper {
@@ -142,4 +147,17 @@ body {
 
 #evaluation-bar::-webkit-progress-bar {
   background-color: var(--white-piece-color);
+}
+
+/* strategy layout */
+.corner {
+  background-color: var(--corner-cell-color);
+}
+
+.extremity {
+  background-color: var(--extremity-cell-color);
+}
+
+.border {
+  background-color: var(--border-cell-color);
 }

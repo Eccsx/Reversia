@@ -21,12 +21,6 @@ const WHITE_PIECE = {
 let previousNoMoveCount = 0;
 let isDraw = false;
 
-// * TEST
-
-
-
-// * END TEST
-
 export default class Game {
   constructor() {
     this.resetGame();
@@ -153,24 +147,20 @@ export default class Game {
     if (previousNoMoveCount == 2) {
       this.endGame();
       return;
-    }
-    else if (this.sandwiches.length == 0) {
+    } else if (this.sandwiches.length == 0) {
       previousNoMoveCount++;
-  
+
       // switch player turn
       this.state = (this.state == STATE.BLACK_TURN) ? STATE.WHITE_TURN : STATE.BLACK_TURN;
-  
+
       // update legal moves and sandwiches
       this.displayLegalMoves();
-      
+
       // recursion
       this.checkDraw();
-    }
-    else {
+    } else {
       previousNoMoveCount = 0;
     }
-  
-    return;
   }
 
   isVictory() {
@@ -382,9 +372,90 @@ export default class Game {
   loadTranscript(matchString) {
     // reset game
     this.resetGame();
+
     // split string in segment of two characters
     for (const cell of matchString.match(/.{1,2}/g)) {
       this.placePiece(cell);
     }
+  }
+
+  enableStrategyLayout() {
+    // corner cells
+    document.getElementById('a1').classList.add('corner');
+    document.getElementById('a8').classList.add('corner');
+    document.getElementById('h1').classList.add('corner');
+    document.getElementById('h8').classList.add('corner');
+
+    // extremity cells
+    document.getElementById('a2').classList.add('extremity');
+    document.getElementById('a7').classList.add('extremity');
+    document.getElementById('b1').classList.add('extremity');
+    document.getElementById('b2').classList.add('extremity');
+    document.getElementById('b7').classList.add('extremity');
+    document.getElementById('b8').classList.add('extremity');
+    document.getElementById('g1').classList.add('extremity');
+    document.getElementById('g2').classList.add('extremity');
+    document.getElementById('g7').classList.add('extremity');
+    document.getElementById('g8').classList.add('extremity');
+    document.getElementById('h2').classList.add('extremity');
+    document.getElementById('h7').classList.add('extremity');
+
+    // border cell
+    document.getElementById('a3').classList.add('border');
+    document.getElementById('a4').classList.add('border');
+    document.getElementById('a5').classList.add('border');
+    document.getElementById('a6').classList.add('border');
+    document.getElementById('c1').classList.add('border');
+    document.getElementById('c8').classList.add('border');
+    document.getElementById('d1').classList.add('border');
+    document.getElementById('d8').classList.add('border');
+    document.getElementById('e1').classList.add('border');
+    document.getElementById('e8').classList.add('border');
+    document.getElementById('f1').classList.add('border');
+    document.getElementById('f8').classList.add('border');
+    document.getElementById('h3').classList.add('border');
+    document.getElementById('h4').classList.add('border');
+    document.getElementById('h5').classList.add('border');
+    document.getElementById('h6').classList.add('border');
+  }
+
+  disableStrategyLayout() {
+    // coner cells
+    document.getElementById('a1').classList.remove('corner');
+    document.getElementById('a8').classList.remove('corner');
+    document.getElementById('h1').classList.remove('corner');
+    document.getElementById('h8').classList.remove('corner');
+
+    // extremity cells
+    document.getElementById('a2').classList.remove('extremity');
+    document.getElementById('a7').classList.remove('extremity');
+    document.getElementById('b1').classList.remove('extremity');
+    document.getElementById('b2').classList.remove('extremity');
+    document.getElementById('b7').classList.remove('extremity');
+    document.getElementById('b8').classList.remove('extremity');
+    document.getElementById('g1').classList.remove('extremity');
+    document.getElementById('g2').classList.remove('extremity');
+    document.getElementById('g7').classList.remove('extremity');
+    document.getElementById('g8').classList.remove('extremity');
+    document.getElementById('h2').classList.remove('extremity');
+    document.getElementById('h7').classList.remove('extremity');
+
+    // border cell
+    document.getElementById('a3').classList.remove('border');
+    document.getElementById('a4').classList.remove('border');
+    document.getElementById('a5').classList.remove('border');
+    document.getElementById('a6').classList.remove('border');
+    document.getElementById('c1').classList.remove('border');
+    document.getElementById('c8').classList.remove('border');
+    document.getElementById('d1').classList.remove('border');
+    document.getElementById('d8').classList.remove('border');
+    document.getElementById('e1').classList.remove('border');
+    document.getElementById('e8').classList.remove('border');
+    document.getElementById('f1').classList.remove('border');
+    document.getElementById('f8').classList.remove('border');
+    document.getElementById('h3').classList.remove('border');
+    document.getElementById('h4').classList.remove('border');
+    document.getElementById('h5').classList.remove('border');
+    document.getElementById('h6').classList.remove('border');
   }
 }
