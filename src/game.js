@@ -24,15 +24,14 @@ export default class Game {
       element: document.createElement('div')
     }
 
+    this.BLACK_PIECE.element.classList.add('black-piece')
+    this.WHITE_PIECE.element.classList.add('white-piece')
+
     // Initialize game
     this.resetGame();
   }
 
   resetGame() {
-    // Setup pieces element
-    this.BLACK_PIECE.element.classList.add('black-piece')
-    this.WHITE_PIECE.element.classList.add('white-piece')
-
     // Clean board
     this.board = [
       [0, 0, 0, 0, 0, 0, 0, 0],
