@@ -1,23 +1,27 @@
 {
-  "name": "Reversia",
+  "name": "reversia",
   "version": "1.0.0",
-  "description": "",
+  "description": "A flat-design Reversi game with AI to beat humans",
   "main": "main.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest ./test"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Eccsx/Reversia.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "Eccsx",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/Eccsx/Reversia/issues"
   },
   "homepage": "https://github.com/Eccsx/Reversia#readme",
   "devDependencies": {
-    "jest": "^27.0.4"
+    "@babel/preset-env": "^7.14.5",
+    "@types/jest": "^26.0.23",
+    "babel-jest": "^27.0.2",
+    "jest": "^27.0.4",
+    "ts-jest": "^27.0.3"
   }
 }
