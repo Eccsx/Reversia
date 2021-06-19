@@ -88,28 +88,26 @@ export default class Game {
     }
 
     // Flip pieces in sandwich
-    for (const sandwich of this.sandwiches[cell]) {
-      for (const piece of sandwich) {
-        const pieceElement = document.getElementById(piece);
-        const pieceIndex = this.cellToIndex(piece);
+    for (const piece of this.sandwiches[cell]) {
+      const pieceElement = document.getElementById(piece);
+      const pieceIndex = this.cellToIndex(piece);
 
-        this.cleanCell(pieceElement);
+      this.cleanCell(pieceElement);
 
-        if (this.state == this.STATE.BLACK_TURN) {
-          pieceElement.appendChild(this.BLACK_PIECE.element.cloneNode());
-          this.board[pieceIndex[0]][pieceIndex[1]] = this.BLACK_PIECE.value;
+      if (this.state == this.STATE.BLACK_TURN) {
+        pieceElement.appendChild(this.BLACK_PIECE.element.cloneNode());
+        this.board[pieceIndex[0]][pieceIndex[1]] = this.BLACK_PIECE.value;
 
-          // Update piece counters
-          this.blackPiecesCount++;
-          this.whitePiecesCount--;
-        } else {
-          pieceElement.appendChild(this.WHITE_PIECE.element.cloneNode());
-          this.board[pieceIndex[0]][pieceIndex[1]] = this.WHITE_PIECE.value;
+        // Update piece counters
+        this.blackPiecesCount++;
+        this.whitePiecesCount--;
+      } else {
+        pieceElement.appendChild(this.WHITE_PIECE.element.cloneNode());
+        this.board[pieceIndex[0]][pieceIndex[1]] = this.WHITE_PIECE.value;
 
-          // Update piece counters
-          this.whitePiecesCount++;
-          this.blackPiecesCount--;
-        }
+        // Update piece counters
+        this.whitePiecesCount++;
+        this.blackPiecesCount--;
       }
     }
 
@@ -283,7 +281,8 @@ export default class Game {
 
     // Store sandwiches if any
     if (isSandwich) {
-      this.sandwiches[cell] = arraySandwiches;
+      // Avoid nested arrays
+      this.sandwiches[cell] = arraySandwiches.flat();
       // Increment array length
       this.sandwiches.length++;
     }
