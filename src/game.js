@@ -72,6 +72,11 @@ export default class Game {
   }
 
   placePiece(cell) {
+    // Check cell is legal move
+    if (!Object.keys(this.sandwiches).includes(cell)) {
+      throw new EvalError(cell + ' cell is not a legal move');
+    }
+
     // Retrieve cell element
     const cellElement = document.getElementById(cell);
 
