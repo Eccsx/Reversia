@@ -145,7 +145,6 @@ export default class Game {
 
   endGame() {
     this.cleanPreviousLegalMoves();
-    console.log("Victory " + ((this.state == this.STATE.WIN_BLACK) ? "BLACK" : "WHITE"));
     return
   }
 
@@ -239,15 +238,13 @@ export default class Game {
   }
 
   getAllLegalMoves(pieceValue) {
-    // Clean sandwiches array
-    this.sandwiches = [];
-
     const legalMoves = [];
     for (const cell of this.surroundingCells) {
       if (this.isCellLegalMove(cell, pieceValue)) {
         legalMoves.push(cell);
       }
     }
+
     return legalMoves;
   }
 
@@ -373,6 +370,9 @@ export default class Game {
       previousLegalMoves[0].onmousedown = null;
       previousLegalMoves[0].classList.remove('legal');
     }
+
+    // Clear sandwiches
+    this.sandwiches = [];
   }
 
   loadTranscript(matchString) {
