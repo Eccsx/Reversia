@@ -8,7 +8,8 @@ export default class Game {
       'WHITE_TURN': 1,
       'WIN_BLACK': 2,
       'WIN_WHITE': 3,
-      'NO_MOVE': 4
+      'NO_MOVE': 4,
+      'DRAW': 5
     }
 
     this.previousNoMoveCount = 0;
@@ -145,7 +146,7 @@ export default class Game {
 
   endGame() {
     this.cleanPreviousLegalMoves();
-    return
+    return;
   }
 
   checkDraw() {
@@ -183,7 +184,15 @@ export default class Game {
 
     // Draw
     if ((this.blackPiecesCount + this.whitePiecesCount) == 64) {
-      this.state = (this.blackPiecesCount > this.whitePiecesCount) ? this.STATE.WIN_BLACK : this.STATE.WIN_WHITE;
+        // Effective draw
+        if (this.blackPiecesCount == this.whitePiecesCount) {
+            this.state = this.STATE.DRAW;
+        }
+        // Win by pieces count
+        else {
+            this.state = (this.blackPiecesCount > this.whitePiecesCount) ? this.STATE.WIN_BLACK : this.STATE.WIN_WHITE;
+        }
+
       return true;
     }
 
