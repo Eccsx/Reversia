@@ -1,58 +1,58 @@
 html,
 body {
-  margin: 0;
-  padding: 0;
+    margin: 0;
+    padding: 0;
 }
 
 :root {
-  /* board */
-  --board-color: rgb(77, 77, 77);
-  --cell-color: rgb(141, 187, 100);
-  --cell-side: 60px;
-  --cell-gap: 4px;
-  --cell-scooped-corner: 20%;
-  /* piece */
-  --piece-diameter: 50px;
-  --black-piece-color: rgb(47, 54, 64);
-  --white-piece-color: rgb(245, 246, 250);
-  /* phantom piece */
-  --phantom-piece-diameter: 50px;
-  --black-phantom-piece-color: rgba(47, 54, 64, 0.5);
-  --white-phantom-piece-color: rgba(245, 246, 250, 0.5);
-  /* move indicator */
-  --move-indicator-diameter: 15px;
-  --move-indicator-color: rgb(159, 100, 187);
-  /* strategy layout */
-  --corner-cell-color: rgb(187, 100, 100);
-  --extremity-cell-color: rgb(187, 146, 100);
-  --border-cell-color: rgb(100, 116, 187);
+    /* board */
+    --board-color: rgb(77, 77, 77);
+    --cell-color: rgb(141, 187, 100);
+    --cell-side: 60px;
+    --cell-gap: 4px;
+    --cell-scooped-corner: 20%;
+    /* piece */
+    --piece-diameter: 50px;
+    --black-piece-color: rgb(47, 54, 64);
+    --white-piece-color: rgb(245, 246, 250);
+    /* phantom piece */
+    --phantom-piece-diameter: 50px;
+    --black-phantom-piece-color: rgba(47, 54, 64, 0.5);
+    --white-phantom-piece-color: rgba(245, 246, 250, 0.5);
+    /* move indicator */
+    --move-indicator-diameter: 15px;
+    --move-indicator-color: rgb(159, 100, 187);
+    /* strategy layout */
+    --corner-cell-color: rgb(187, 100, 100);
+    --extremity-cell-color: rgb(187, 146, 100);
+    --border-cell-color: rgb(100, 116, 187);
 
 }
 
 #board-wrapper {
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
 }
 
 #reversi-board {
-  display: inline-flex;
-  flex-wrap: wrap;
-  flex-direction: column;
-  width: calc(var(--cell-side) * 8 + var(--cell-gap) * 7);
-  height: calc(var(--cell-side) * 8 + var(--cell-gap) * 7);
-  gap: var(--cell-gap);
-  padding: var(--cell-gap);
-  background-color: var(--board-color);
+    display: inline-flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    width: calc(var(--cell-side) * 8 + var(--cell-gap) * 7);
+    height: calc(var(--cell-side) * 8 + var(--cell-gap) * 7);
+    gap: var(--cell-gap);
+    padding: var(--cell-gap);
+    background-color: var(--board-color);
 }
 
 .board-cell {
-  background-color: var(--cell-color);
-  width: var(--cell-side);
-  height: var(--cell-side);
-  /* center piece within */
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    background-color: var(--cell-color);
+    width: var(--cell-side);
+    height: var(--cell-side);
+    /* center piece within */
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /* scooped corners */
@@ -60,104 +60,104 @@ body {
 #c7,
 #g3,
 #g7 {
-  border-top-left-radius: var(--cell-scooped-corner);
+    border-top-left-radius: var(--cell-scooped-corner);
 }
 
 #b3,
 #b7,
 #f3,
 #f7 {
-  border-top-right-radius: var(--cell-scooped-corner);
+    border-top-right-radius: var(--cell-scooped-corner);
 }
 
 #b2,
 #b6,
 #f2,
 #f6 {
-  border-bottom-right-radius: var(--cell-scooped-corner);
+    border-bottom-right-radius: var(--cell-scooped-corner);
 }
 
 #c2,
 #c6,
 #g2,
 #g6 {
-  border-bottom-left-radius: var(--cell-scooped-corner);
+    border-bottom-left-radius: var(--cell-scooped-corner);
 }
 
 /* pieces */
 .white-piece {
-  background-color: var(--white-piece-color);
-  width: var(--piece-diameter);
-  height: var(--piece-diameter);
-  border-radius: 100%;
+    background-color: var(--white-piece-color);
+    width: var(--piece-diameter);
+    height: var(--piece-diameter);
+    border-radius: 100%;
 }
 
 .black-piece {
-  background-color: var(--black-piece-color);
-  width: var(--piece-diameter);
-  height: var(--piece-diameter);
-  border-radius: 100%;
+    background-color: var(--black-piece-color);
+    width: var(--piece-diameter);
+    height: var(--piece-diameter);
+    border-radius: 100%;
 }
 
 /* phantom pieces */
 .phantom-white-piece {
-  background-color: var(--white-phantom-piece-color);
-  width: var(--phantom-piece-diameter);
-  height: var(--phantom-piece-diameter);
-  border-radius: 100%;
-  display: none;
+    background-color: var(--white-phantom-piece-color);
+    width: var(--phantom-piece-diameter);
+    height: var(--phantom-piece-diameter);
+    border-radius: 100%;
+    display: none;
 }
 
 .phantom-black-piece {
-  background-color: var(--black-phantom-piece-color);
-  width: var(--phantom-piece-diameter);
-  height: var(--phantom-piece-diameter);
-  border-radius: 100%;
-  display: none;
+    background-color: var(--black-phantom-piece-color);
+    width: var(--phantom-piece-diameter);
+    height: var(--phantom-piece-diameter);
+    border-radius: 100%;
+    display: none;
 }
 
 .move-indicator {
-  background-color: var(--move-indicator-color);
-  width: var(--move-indicator-diameter);
-  height: var(--move-indicator-diameter);
-  border-radius: 100%;
+    background-color: var(--move-indicator-color);
+    width: var(--move-indicator-diameter);
+    height: var(--move-indicator-diameter);
+    border-radius: 100%;
 }
 
 .legal:hover>.move-indicator {
-  display: none;
+    display: none;
 }
 
 .legal:hover>.phantom-black-piece,
 .legal:hover>.phantom-white-piece {
-  display: block;
+    display: block;
 }
 
 /* evaluation pieces bar */
 #evaluation-bar {
-  border: none;
-  padding: 0px var(--cell-gap) var(--cell-gap) var(--cell-gap);
-  width: calc(var(--cell-side) * 8 + var(--cell-gap) * 9);
-  height: calc(var(--cell-side) / 3);
-  background-color: var(--board-color);
+    border: none;
+    padding: 0px var(--cell-gap) var(--cell-gap) var(--cell-gap);
+    width: calc(var(--cell-side) * 8 + var(--cell-gap) * 9);
+    height: calc(var(--cell-side) / 3);
+    background-color: var(--board-color);
 }
 
 #evaluation-bar::-webkit-progress-value {
-  background-color: var(--black-piece-color);
+    background-color: var(--black-piece-color);
 }
 
 #evaluation-bar::-webkit-progress-bar {
-  background-color: var(--white-piece-color);
+    background-color: var(--white-piece-color);
 }
 
 /* strategy layout */
 .corner {
-  background-color: var(--corner-cell-color);
+    background-color: var(--corner-cell-color);
 }
 
 .extremity {
-  background-color: var(--extremity-cell-color);
+    background-color: var(--extremity-cell-color);
 }
 
 .border {
-  background-color: var(--border-cell-color);
+    background-color: var(--border-cell-color);
 }
