@@ -1,4 +1,4 @@
-export default class Game {
+export class Game {
     constructor() {
         // Board properties
         this.BOARD_LENGTH = 8;
@@ -25,8 +25,8 @@ export default class Game {
             element: document.createElement('div')
         }
 
-        this.BLACK_PIECE.element.classList.add('black-piece')
-        this.WHITE_PIECE.element.classList.add('white-piece')
+        this.BLACK_PIECE.element.classList.add('black-piece');
+        this.WHITE_PIECE.element.classList.add('white-piece');
 
         // Initialize game
         this.resetGame();
@@ -66,7 +66,7 @@ export default class Game {
         this.state = this.STATE.BLACK_TURN;
 
         // All possibles sandwiches per legal move
-        this.sandwiches = [];
+        this.updateSandwiches(this.BLACK_PIECE.value);
 
         // Compute and show first legal moves
         this.displayLegalMoves();
@@ -76,20 +76,14 @@ export default class Game {
         const cellsToUpdate = this.placePiece(legalMove);
 
         this.updateBoardElements(cellsToUpdate);
-
-        // Switch player turn
-        this.state = (this.state == this.STATE.BLACK_TURN) ? this.STATE.WHITE_TURN : this.STATE.BLACK_TURN;
-
-        // Update legal moves and sandwiches
-        this.updateSurroundingCell(legalMove);
         this.displayLegalMoves();
     }
 
     placePiece(cell) {
         // Add piece value in board
+        const pieceValue = (this.state == this.STATE.BLACK_TURN) ? this.BLACK_PIECE.value : this.WHITE_PIECE.value;
         const index = this.cellToIndex(cell);
-        this.board[index[0]][index[1]] =
-            (this.state == this.STATE.BLACK_TURN) ? this.BLACK_PIECE.value : this.WHITE_PIECE.value;
+        this.board[index[0]][index[1]] = pieceValue;
 
         // Update piece count
         if (this.state == this.STATE.BLACK_TURN) {
@@ -121,6 +115,13 @@ export default class Game {
 
             cellsToUpdate.push(cellToSwitch);
         }
+
+        this.updateSurroundingCell(cell);
+        this.updateSandwiches(
+            (this.state == this.STATE.BLACK_TURN) ? this.WHITE_PIECE.value : this.BLACK_PIECE.value
+        );
+
+        this.switchPlayerTurn();
 
         return cellsToUpdate;
     }
@@ -154,8 +155,7 @@ export default class Game {
         } else if (this.sandwiches.length == 0) {
             this.previousNoMoveCount++;
 
-            // Switch player turn
-            this.state = (this.state == this.STATE.BLACK_TURN) ? this.STATE.WHITE_TURN : this.STATE.BLACK_TURN;
+            this.switchPlayerTurn();
 
             // Update legal moves and sandwiches
             this.displayLegalMoves();
@@ -165,6 +165,10 @@ export default class Game {
         } else {
             this.previousNoMoveCount = 0;
         }
+    }
+
+    switchPlayerTurn() {
+        this.state = (this.state == this.STATE.BLACK_TURN) ? this.STATE.WHITE_TURN : this.STATE.BLACK_TURN;
     }
 
     isVictory() {
@@ -244,26 +248,21 @@ export default class Game {
         cellElement.onmousedown = null;
     }
 
-    getAllLegalMoves(pieceValue) {
-        const legalMoves = [];
-
+    updateSandwiches(pieceValue) {
+        this.sandwiches = [];
         for (const cell of this.surroundingCells) {
-            if (this.isCellLegalMove(cell, pieceValue)) {
-                legalMoves.push(cell);
-            }
+            this.searchSandwiches(cell, pieceValue)
         }
-
-        return legalMoves;
     }
 
-    isCellLegalMove(cell, pieceValue) {
+    searchSandwiches(cell, pieceValue) {
         // Retrieve cell grid indexes
         const cellIndex = this.cellToIndex(cell);
         const i = parseInt(cellIndex[0]);
         const j = parseInt(cellIndex[1]);
 
         let isSandwich = false;
-        const arraySandwiches = []
+        const arraySandwiches = [];
 
         // Loop through neighbors
         // Optimization → https://stackoverflow.com/a/67758639
@@ -344,7 +343,7 @@ export default class Game {
         this.cleanPreviousLegalMoves();
 
         const pieceValue = (this.state == this.STATE.BLACK_TURN) ? this.BLACK_PIECE.value : this.WHITE_PIECE.value;
-        const legalMoves = this.getAllLegalMoves(pieceValue);
+        const legalMoves = Object.keys(this.sandwiches);
 
         // Skip turn if player cannot play
         if (legalMoves.length == 0) {
@@ -395,9 +394,6 @@ export default class Game {
             previousLegalMoves[0].onmousedown = null;
             previousLegalMoves[0].classList.remove('legal');
         }
-
-        // Clear sandwiches
-        this.sandwiches = [];
     }
 
     loadTranscript(matchString) {
