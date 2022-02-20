@@ -115,9 +115,9 @@ test('resetGame()', () => {
     });
 });
 
-test('placePiece()', () => {
+test('playMove()', () => {
     // Black legal move
-    game.placePiece("c4");
+    game.playMove("c4");
 
     expect(game.board).toEqual([
         [0, 0, 0, 0, 0, 0, 0, 0],
@@ -149,7 +149,7 @@ test('placePiece()', () => {
     });
 
     // White legal move
-    game.placePiece("c3");
+    game.playMove("c3");
 
     expect(game.board).toEqual([
         [0, 0, 0, 0, 0, 0, 0, 0],
@@ -180,16 +180,6 @@ test('placePiece()', () => {
         'e6': ['e5'],
         'f5': ['e5']
     });
-
-    // Illegal move
-    expect(() => {
-        game.placePiece("h7")
-    }).toThrowError(new EvalError('h7 cell is not a legal move'));
-
-    // Not possible move
-    expect(() => {
-        game.placePiece("z12")
-    }).toThrowError(new EvalError('z12 cell is not a legal move'));
 });
 
 test('endGame()', () => {

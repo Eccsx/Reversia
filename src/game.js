@@ -72,76 +72,74 @@ export default class Game {
         this.displayLegalMoves();
     }
 
+    playMove(legalMove) {
+        const cellsToUpdate = this.placePiece(legalMove);
+
+        this.updateBoardElements(cellsToUpdate);
+
+        // Switch player turn
+        this.state = (this.state == this.STATE.BLACK_TURN) ? this.STATE.WHITE_TURN : this.STATE.BLACK_TURN;
+
+        // Update legal moves and sandwiches
+        this.updateSurroundingCell(legalMove);
+        this.displayLegalMoves();
+    }
+
     placePiece(cell) {
-        // Check cell is legal move
-        if (!Object.keys(this.sandwiches).includes(cell)) {
-            throw new EvalError(cell + ' cell is not a legal move');
-        }
+        // Add piece value in board
+        const index = this.cellToIndex(cell);
+        this.board[index[0]][index[1]] =
+            (this.state == this.STATE.BLACK_TURN) ? this.BLACK_PIECE.value : this.WHITE_PIECE.value;
 
-        // Retrieve cell element
-        const cellElement = document.getElementById(cell);
-
-        // Remove all inside element
-        this.cleanCell(cellElement);
-
-        // Add piece element
+        // Update piece count
         if (this.state == this.STATE.BLACK_TURN) {
-            cellElement.appendChild(this.BLACK_PIECE.element.cloneNode());
             this.blackPiecesCount++;
         } else {
-            cellElement.appendChild(this.WHITE_PIECE.element.cloneNode());
             this.whitePiecesCount++;
         }
 
-        // Flip pieces in sandwich
-        for (const piece of this.sandwiches[cell]) {
-            const pieceElement = document.getElementById(piece);
-            const pieceIndex = this.cellToIndex(piece);
+        // Cells element that will need to be updated
+        const cellsToUpdate = [cell];
 
-            this.cleanCell(pieceElement);
+        // Flip pieces in sandwich
+        for (const cellToSwitch of this.sandwiches[cell]) {
+            const pieceIndex = this.cellToIndex(cellToSwitch);
 
             if (this.state == this.STATE.BLACK_TURN) {
-                pieceElement.appendChild(this.BLACK_PIECE.element.cloneNode());
                 this.board[pieceIndex[0]][pieceIndex[1]] = this.BLACK_PIECE.value;
 
                 // Update piece counters
                 this.blackPiecesCount++;
                 this.whitePiecesCount--;
             } else {
-                pieceElement.appendChild(this.WHITE_PIECE.element.cloneNode());
                 this.board[pieceIndex[0]][pieceIndex[1]] = this.WHITE_PIECE.value;
 
                 // Update piece counters
                 this.whitePiecesCount++;
                 this.blackPiecesCount--;
             }
+
+            cellsToUpdate.push(cellToSwitch);
         }
 
-        // Add piece value in board
-        const index = this.cellToIndex(cell);
-        this.board[index[0]][index[1]] =
-            (this.state == this.STATE.BLACK_TURN) ? this.BLACK_PIECE.value : this.WHITE_PIECE.value;
+        return cellsToUpdate;
+    }
 
-        // Check victory
-        if (this.isVictory()) {
-            this.endGame();
-            return;
-        }
+    updateBoardElements(cellsToUpdate) {
+        cellsToUpdate.forEach(cell => {
+            // Retrieve and clean cell element
+            const cellElement = document.getElementById(cell);
+            this.cleanCell(cellElement);
 
-        // Update surrounding cells
-        this.surroundingCells.delete(cell);
-        for (const surroundingCell of this.getCellEmptyNeighbors(cell)) {
-            this.surroundingCells.add(surroundingCell);
-        }
+            // Update piece
+            const pieceIndex = this.cellToIndex(cell);
 
-        // Switch player turn
-        this.state = (this.state == this.STATE.BLACK_TURN) ? this.STATE.WHITE_TURN : this.STATE.BLACK_TURN;
-
-        // Update legal moves and sandwiches
-        this.displayLegalMoves();
-
-        // Check draw
-        this.checkDraw();
+            if (this.board[pieceIndex[0]][pieceIndex[1]] == 1) {
+                cellElement.appendChild(this.BLACK_PIECE.element.cloneNode());
+            } else if (this.board[pieceIndex[0]][pieceIndex[1]] == 2) {
+                cellElement.appendChild(this.WHITE_PIECE.element.cloneNode());
+            }
+        });
     }
 
     endGame() {
@@ -248,6 +246,7 @@ export default class Game {
 
     getAllLegalMoves(pieceValue) {
         const legalMoves = [];
+
         for (const cell of this.surroundingCells) {
             if (this.isCellLegalMove(cell, pieceValue)) {
                 legalMoves.push(cell);
@@ -347,6 +346,11 @@ export default class Game {
         const pieceValue = (this.state == this.STATE.BLACK_TURN) ? this.BLACK_PIECE.value : this.WHITE_PIECE.value;
         const legalMoves = this.getAllLegalMoves(pieceValue);
 
+        // Skip turn if player cannot play
+        if (legalMoves.length == 0) {
+            this.checkDraw();
+        }
+
         for (const legalMove of legalMoves) {
             // Move indicator
             const moveIndicator = document.createElement('div');
@@ -364,8 +368,20 @@ export default class Game {
 
             // Allow cell to place piece
             cell.onmousedown = () => {
-                this.placePiece(legalMove)
+                this.playMove(legalMove);
+
+                // Check victory
+                if (this.isVictory()) {
+                    this.endGame();
+                }
             };
+        }
+    }
+
+    updateSurroundingCell(placedCell) {
+        this.surroundingCells.delete(placedCell);
+        for (const surroundingCell of this.getCellEmptyNeighbors(placedCell)) {
+            this.surroundingCells.add(surroundingCell);
         }
     }
 
@@ -389,7 +405,7 @@ export default class Game {
 
         // Split string in segment of two characters
         for (const cell of matchString.match(/.{1,2}/g)) {
-            this.placePiece(cell);
+            this.playMove(cell);
         }
     }
 
