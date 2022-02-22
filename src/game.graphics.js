@@ -71,8 +71,6 @@ export class GameGraphics extends Game {
 
     displayLegalMoves() {
         this.cleanPreviousLegalMoves();
-
-        const pieceValue = (this.state == this.STATE.BLACK_TURN) ? this.BLACK_PIECE.value : this.WHITE_PIECE.value;
         const legalMoves = Object.keys(this.sandwiches);
 
         for (const legalMove of legalMoves) {
@@ -89,14 +87,16 @@ export class GameGraphics extends Game {
 
             // Allow cell to place piece
             /* istanbul ignore next */
-            cell.onmousedown = () => {
-                this.placePiece(legalMove);
+            cell.onmousedown = () => this.mouseAction(legalMove);
+        }
+    }
 
-                // Check victory
-                if (this.isVictory()) {
-                    this.endGame()
-                }
-            };
+    mouseAction(move) {
+        this.placePiece(move);
+
+        // Check victory
+        if (this.isVictory()) {
+            this.endGame();
         }
     }
 

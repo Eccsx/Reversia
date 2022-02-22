@@ -6,7 +6,7 @@ export class Minimax {
     }
 
     think() {
-        const legalMoves = Object.keys(this.game.sandwiches)
+        const legalMoves = Object.keys(this.game.sandwiches);
         const results = {};
 
         legalMoves.forEach(move => {

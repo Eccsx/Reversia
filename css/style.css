@@ -130,6 +130,7 @@ body {
 .legal:hover>.phantom-black-piece,
 .legal:hover>.phantom-white-piece {
     display: block;
+    cursor: pointer;
 }
 
 /* evaluation pieces bar */
