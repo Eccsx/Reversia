@@ -8,25 +8,18 @@ export class Game {
             'WHITE_TURN': 1,
             'WIN_BLACK': 2,
             'WIN_WHITE': 3,
-            'NO_MOVE': 4,
-            'DRAW': 5
+            'DRAW': 4
         }
 
         this.previousNoMoveCount = 0;
 
         // Pieces
         this.BLACK_PIECE = {
-            value: 1,
-            element: document.createElement('div')
-        }
-
+            value: 1
+        };
         this.WHITE_PIECE = {
-            value: 2,
-            element: document.createElement('div')
-        }
-
-        this.BLACK_PIECE.element.classList.add('black-piece');
-        this.WHITE_PIECE.element.classList.add('white-piece');
+            value: 2
+        };
 
         // Initialize game
         this.resetGame();
@@ -45,11 +38,6 @@ export class Game {
             [0, 0, 0, 0, 0, 0, 0, 0]
         ];
 
-        document.getElementById('e4').appendChild(this.BLACK_PIECE.element.cloneNode());
-        document.getElementById('d5').appendChild(this.BLACK_PIECE.element.cloneNode());
-        document.getElementById('e5').appendChild(this.WHITE_PIECE.element.cloneNode());
-        document.getElementById('d4').appendChild(this.WHITE_PIECE.element.cloneNode());
-
         // Piece counters
         this.blackPiecesCount = 2;
         this.whitePiecesCount = 2;
@@ -67,16 +55,6 @@ export class Game {
 
         // All possibles sandwiches per legal move
         this.updateSandwiches(this.BLACK_PIECE.value);
-
-        // Compute and show first legal moves
-        this.displayLegalMoves();
-    }
-
-    playMove(legalMove) {
-        const cellsToUpdate = this.placePiece(legalMove);
-
-        this.updateBoardElements(cellsToUpdate);
-        this.displayLegalMoves();
     }
 
     placePiece(cell) {
@@ -121,50 +99,42 @@ export class Game {
             (this.state == this.STATE.BLACK_TURN) ? this.WHITE_PIECE.value : this.BLACK_PIECE.value
         );
 
-        this.switchPlayerTurn();
+        if (!this.isVictory()) {
+            this.switchPlayerTurn();
+            this.isNoMoreMove();
+        }
 
         return cellsToUpdate;
     }
 
-    updateBoardElements(cellsToUpdate) {
-        cellsToUpdate.forEach(cell => {
-            // Retrieve and clean cell element
-            const cellElement = document.getElementById(cell);
-            this.cleanCell(cellElement);
-
-            // Update piece
-            const pieceIndex = this.cellToIndex(cell);
-
-            if (this.board[pieceIndex[0]][pieceIndex[1]] == 1) {
-                cellElement.appendChild(this.BLACK_PIECE.element.cloneNode());
-            } else if (this.board[pieceIndex[0]][pieceIndex[1]] == 2) {
-                cellElement.appendChild(this.WHITE_PIECE.element.cloneNode());
-            }
-        });
-    }
-
-    endGame() {
-        this.cleanPreviousLegalMoves();
-        return;
-    }
-
-    checkDraw() {
-        if (this.previousNoMoveCount == 2) {
-            this.endGame();
-            return;
-        } else if (this.sandwiches.length == 0) {
-            this.previousNoMoveCount++;
-
-            this.switchPlayerTurn();
-
-            // Update legal moves and sandwiches
-            this.displayLegalMoves();
-
-            // Recursion
-            this.checkDraw();
+    isNoMoreMove() {
+        if (Object.keys(this.sandwiches).length == 0) {
+            this.skipPlayerTurn();
         } else {
             this.previousNoMoveCount = 0;
         }
+
+        if (this.previousNoMoveCount == 2) {
+            // Effective draw
+            if (this.blackPiecesCount == this.whitePiecesCount) {
+                this.state = this.STATE.DRAW;
+            } else {
+                // Win by pieces count
+                this.state = (this.blackPiecesCount > this.whitePiecesCount) ? this.STATE.WIN_BLACK : this.STATE.WIN_WHITE;
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    skipPlayerTurn() {
+        this.previousNoMoveCount++;
+        this.updateSandwiches(
+            (this.state == this.STATE.BLACK_TURN) ? this.WHITE_PIECE.value : this.BLACK_PIECE.value
+        );
+        this.switchPlayerTurn();
     }
 
     switchPlayerTurn() {
@@ -184,14 +154,13 @@ export class Game {
             return true;
         }
 
-        // Draw
+        // No more empty cell
         if ((this.blackPiecesCount + this.whitePiecesCount) == 64) {
             // Effective draw
             if (this.blackPiecesCount == this.whitePiecesCount) {
                 this.state = this.STATE.DRAW;
-            }
-            // Win by pieces count
-            else {
+            } else {
+                // Win by pieces count
                 this.state = (this.blackPiecesCount > this.whitePiecesCount) ? this.STATE.WIN_BLACK : this.STATE.WIN_WHITE;
             }
 
@@ -240,12 +209,6 @@ export class Game {
         const number = cell[1];
 
         return [number - 1, letterCode % 97];
-    }
-
-    cleanCell(cellElement) {
-        cellElement.classList.remove('legal');
-        cellElement.textContent = null;
-        cellElement.onmousedown = null;
     }
 
     updateSandwiches(pieceValue) {
@@ -339,60 +302,10 @@ export class Game {
         return cellsIndexes;
     }
 
-    displayLegalMoves() {
-        this.cleanPreviousLegalMoves();
-
-        const pieceValue = (this.state == this.STATE.BLACK_TURN) ? this.BLACK_PIECE.value : this.WHITE_PIECE.value;
-        const legalMoves = Object.keys(this.sandwiches);
-
-        // Skip turn if player cannot play
-        if (legalMoves.length == 0) {
-            this.checkDraw();
-        }
-
-        for (const legalMove of legalMoves) {
-            // Move indicator
-            const moveIndicator = document.createElement('div');
-            moveIndicator.className = 'move-indicator';
-
-            // Phantom piece
-            const phantomPiece = document.createElement('div');
-            phantomPiece.className = (pieceValue == this.BLACK_PIECE.value) ? 'phantom-black-piece' : 'phantom-white-piece';
-
-            // Add element to cell
-            const cell = document.getElementById(legalMove);
-            cell.classList.add('legal');
-            cell.appendChild(moveIndicator);
-            cell.append(phantomPiece);
-
-            // Allow cell to place piece
-            cell.onmousedown = () => {
-                this.playMove(legalMove);
-
-                // Check victory
-                if (this.isVictory()) {
-                    this.endGame();
-                }
-            };
-        }
-    }
-
     updateSurroundingCell(placedCell) {
         this.surroundingCells.delete(placedCell);
         for (const surroundingCell of this.getCellEmptyNeighbors(placedCell)) {
             this.surroundingCells.add(surroundingCell);
-        }
-    }
-
-    cleanPreviousLegalMoves() {
-        const previousLegalMoves = document.getElementsByClassName('legal');
-
-        // Solve for..of issue
-        // Ressource -> https://stackoverflow.com/a/39042507/11060940
-        while (previousLegalMoves.length) {
-            previousLegalMoves[0].textContent = null;
-            previousLegalMoves[0].onmousedown = null;
-            previousLegalMoves[0].classList.remove('legal');
         }
     }
 
@@ -401,87 +314,7 @@ export class Game {
 
         // Split string in segment of two characters
         for (const cell of matchString.match(/.{1,2}/g)) {
-            this.playMove(cell);
+            this.placePiece(cell);
         }
-    }
-
-    enableStrategyLayout() {
-        // Corner cells
-        document.getElementById('a1').classList.add('corner');
-        document.getElementById('a8').classList.add('corner');
-        document.getElementById('h1').classList.add('corner');
-        document.getElementById('h8').classList.add('corner');
-
-        // Extremity cells
-        document.getElementById('a2').classList.add('extremity');
-        document.getElementById('a7').classList.add('extremity');
-        document.getElementById('b1').classList.add('extremity');
-        document.getElementById('b2').classList.add('extremity');
-        document.getElementById('b7').classList.add('extremity');
-        document.getElementById('b8').classList.add('extremity');
-        document.getElementById('g1').classList.add('extremity');
-        document.getElementById('g2').classList.add('extremity');
-        document.getElementById('g7').classList.add('extremity');
-        document.getElementById('g8').classList.add('extremity');
-        document.getElementById('h2').classList.add('extremity');
-        document.getElementById('h7').classList.add('extremity');
-
-        // border cell
-        document.getElementById('a3').classList.add('border');
-        document.getElementById('a4').classList.add('border');
-        document.getElementById('a5').classList.add('border');
-        document.getElementById('a6').classList.add('border');
-        document.getElementById('c1').classList.add('border');
-        document.getElementById('c8').classList.add('border');
-        document.getElementById('d1').classList.add('border');
-        document.getElementById('d8').classList.add('border');
-        document.getElementById('e1').classList.add('border');
-        document.getElementById('e8').classList.add('border');
-        document.getElementById('f1').classList.add('border');
-        document.getElementById('f8').classList.add('border');
-        document.getElementById('h3').classList.add('border');
-        document.getElementById('h4').classList.add('border');
-        document.getElementById('h5').classList.add('border');
-        document.getElementById('h6').classList.add('border');
-    }
-
-    disableStrategyLayout() {
-        // Corner cells
-        document.getElementById('a1').classList.remove('corner');
-        document.getElementById('a8').classList.remove('corner');
-        document.getElementById('h1').classList.remove('corner');
-        document.getElementById('h8').classList.remove('corner');
-
-        // Extremity cells
-        document.getElementById('a2').classList.remove('extremity');
-        document.getElementById('a7').classList.remove('extremity');
-        document.getElementById('b1').classList.remove('extremity');
-        document.getElementById('b2').classList.remove('extremity');
-        document.getElementById('b7').classList.remove('extremity');
-        document.getElementById('b8').classList.remove('extremity');
-        document.getElementById('g1').classList.remove('extremity');
-        document.getElementById('g2').classList.remove('extremity');
-        document.getElementById('g7').classList.remove('extremity');
-        document.getElementById('g8').classList.remove('extremity');
-        document.getElementById('h2').classList.remove('extremity');
-        document.getElementById('h7').classList.remove('extremity');
-
-        // Border cell
-        document.getElementById('a3').classList.remove('border');
-        document.getElementById('a4').classList.remove('border');
-        document.getElementById('a5').classList.remove('border');
-        document.getElementById('a6').classList.remove('border');
-        document.getElementById('c1').classList.remove('border');
-        document.getElementById('c8').classList.remove('border');
-        document.getElementById('d1').classList.remove('border');
-        document.getElementById('d8').classList.remove('border');
-        document.getElementById('e1').classList.remove('border');
-        document.getElementById('e8').classList.remove('border');
-        document.getElementById('f1').classList.remove('border');
-        document.getElementById('f8').classList.remove('border');
-        document.getElementById('h3').classList.remove('border');
-        document.getElementById('h4').classList.remove('border');
-        document.getElementById('h5').classList.remove('border');
-        document.getElementById('h6').classList.remove('border');
     }
 }
