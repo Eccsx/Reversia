@@ -9,9 +9,18 @@ export class GameGraphics extends Game {
         // Pieces element
         this.BLACK_PIECE['element'] = document.createElement('div');
         this.WHITE_PIECE['element'] = document.createElement('div');
-
         this.BLACK_PIECE.element.classList.add('black-piece');
         this.WHITE_PIECE.element.classList.add('white-piece');
+
+        // Phantom
+        this.BLACK_PIECE['phantom'] = document.createElement('div');
+        this.WHITE_PIECE['phantom'] = document.createElement('div');
+        this.BLACK_PIECE.phantom.classList.add('phantom-black-piece');
+        this.WHITE_PIECE.phantom.classList.add('phantom-white-piece');
+
+        // Move indicator
+        this.MOVE_INDICATOR = document.createElement('div');
+        this.MOVE_INDICATOR.classList.add('move-indicator');
 
         this.resetGraphics();
     }
@@ -67,21 +76,19 @@ export class GameGraphics extends Game {
         const legalMoves = Object.keys(this.sandwiches);
 
         for (const legalMove of legalMoves) {
-            // Move indicator
-            const moveIndicator = document.createElement('div');
-            moveIndicator.className = 'move-indicator';
-
-            // Phantom piece
-            const phantomPiece = document.createElement('div');
-            phantomPiece.className = (pieceValue == this.BLACK_PIECE.value) ? 'phantom-black-piece' : 'phantom-white-piece';
-
             // Add element to cell
             const cell = document.getElementById(legalMove);
             cell.classList.add('legal');
-            cell.appendChild(moveIndicator);
-            cell.append(phantomPiece);
+
+            cell.appendChild(this.MOVE_INDICATOR.cloneNode());
+            cell.append(
+                (this.state == this.STATE.BLACK_TURN) ?
+                this.BLACK_PIECE.phantom.cloneNode() :
+                this.WHITE_PIECE.phantom.cloneNode()
+            );
 
             // Allow cell to place piece
+            /* istanbul ignore next */
             cell.onmousedown = () => {
                 this.placePiece(legalMove);
 
@@ -140,7 +147,7 @@ export class GameGraphics extends Game {
         document.getElementById('h2').classList.add('extremity');
         document.getElementById('h7').classList.add('extremity');
 
-        // border cell
+        // Corder cells
         document.getElementById('a3').classList.add('border');
         document.getElementById('a4').classList.add('border');
         document.getElementById('a5').classList.add('border');
