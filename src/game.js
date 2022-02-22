@@ -317,4 +317,21 @@ export class Game {
             this.placePiece(cell);
         }
     }
+
+    /* istanbul ignore next */
+    // StructuredClone is not supported in Node.js
+    clone() {
+        const gameClone = new Game();
+
+        // Clone properties without reference
+        gameClone.board = structuredClone(this.board);
+        gameClone.blackPiecesCount = structuredClone(this.blackPiecesCount);
+        gameClone.whitePiecesCount = structuredClone(this.whitePiecesCount);
+        gameClone.surroundingCells = structuredClone(this.surroundingCells);
+        gameClone.state = structuredClone(this.state);
+        gameClone.sandwiches = structuredClone(this.sandwiches);
+        gameClone.previousNoMoveCount = structuredClone(this.previousNoMoveCount);
+
+        return gameClone;
+    }
 }

@@ -15,7 +15,6 @@ afterEach(() => {
     jest.resetModules();
 });
 
-import { tsMethodSignature } from "@babel/types";
 import {
     Game
 } from "../src/game.js";
