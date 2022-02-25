@@ -20,7 +20,7 @@ export class Minimax {
         return results;
     }
 
-    minimax(game, depth, maximazingPlayer) {
+    minimax(game, depth, alpha, beta, maximazingPlayer) {
         // No move left or win or draw
         if (depth == 0 || game.isVictory()) {
             return this.evaluatePosition(game, maximazingPlayer);
@@ -33,7 +33,7 @@ export class Minimax {
             let maxEval = -Infinity;
 
             // Play each legal moves and compared their evaluation
-            legals.forEach(legal => {
+            for (const legal of legals) {
                 // Clone game board
                 const gameChild = game.clone();
 
@@ -41,16 +41,22 @@ export class Minimax {
                 gameChild.placePiece(legal);
 
                 // Compare evaluation
-                const childEval = this.minimax(gameChild, depth - 1, false);
+                const childEval = this.minimax(gameChild, depth - 1, -Infinity, Infinity, false);
                 maxEval = Math.max(maxEval, childEval);
-            });
+
+                // Alpha pruning
+                alpha = Math.max(alpha, eval);
+                if (beta <= alpha) {
+                    break;
+                }
+            };
 
             return maxEval;
         } else {
             let minEval = Infinity;
 
             // Play each legal moves and compared their evaluation
-            legals.forEach(legal => {
+            for (const legal of legals) {
                 // Copy game board
                 const gameChild = game.clone();
 
@@ -58,9 +64,13 @@ export class Minimax {
                 gameChild.placePiece(legal);
 
                 // Compare evaluation
-                const childEval = this.minimax(gameChild, depth - 1, true);
+                const childEval = this.minimax(gameChild, depth - 1, alpha, beta, true);
                 minEval = Math.min(minEval, childEval);
-            });
+
+                // Beta pruning
+                beta = Math.max(beta, eval);
+                if (alpha <= beta) break;
+            };
 
             return minEval;
         }
