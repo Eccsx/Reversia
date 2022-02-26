@@ -8,6 +8,7 @@ export class GameMinimax extends GameGraphics {
 
         this.depth = depth;
         this.isMinimaxBlack = isMinimaxBlack;
+        this.minimaxTurn = isMinimaxBlack ? this.STATE.BLACK_TURN : this.STATE.WHITE_TURN;
 
         // Minimaxs play first
         if (isMinimaxBlack) {
@@ -50,7 +51,10 @@ export class GameMinimax extends GameGraphics {
         // Check victory
         if (this.isVictory()) {
             this.endGame();
-        } else {
+        }
+        // Check skip problem to avoid color switching or double color play
+        // Minimaw can only play if it's it turn
+        else if (this.state == this.minimaxTurn) {
             // Block humain from playing while minimax is playing
             this.cleanPreviousLegalMoves();
 
