@@ -13,7 +13,7 @@ export class Minimax {
             const gameClone = this.game.clone();
             gameClone.placePiece(move);
 
-            const moveEval = this.minimax(gameClone, this.depth, true);
+            const moveEval = this.minimax(gameClone, this.depth, -Infinity, Infinity, true);
             results[move] = moveEval;
         });
 
@@ -41,7 +41,7 @@ export class Minimax {
                 gameChild.placePiece(legal);
 
                 // Compare evaluation
-                const childEval = this.minimax(gameChild, depth - 1, -Infinity, Infinity, false);
+                const childEval = this.minimax(gameChild, depth - 1, alpha, beta, false);
                 maxEval = Math.max(maxEval, childEval);
 
                 // Alpha pruning
@@ -68,7 +68,7 @@ export class Minimax {
                 minEval = Math.min(minEval, childEval);
 
                 // Beta pruning
-                beta = Math.max(beta, eval);
+                beta = Math.min(beta, eval);
                 if (alpha <= beta) break;
             };
 
