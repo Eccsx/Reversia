@@ -2,7 +2,7 @@ import {
     GameMinimax
 } from './game.minimax.js';
 
-const depth = 3;
+const depth = 4;
 const game = new GameMinimax(depth, true);
 
 // * TEST
