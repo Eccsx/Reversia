@@ -119,4 +119,12 @@ export default class StaticEvaluation {
 
     return maxPlayerUtility - minPlayerUtility;
   }
+
+  static staticEvaluation(game, isMaximizingBlack) {
+    return this.coinParity(game, isMaximizingBlack) +
+      this.coinActualMobility(game, isMaximizingBlack) +
+      this.coinPotentialMobility(game, isMaximizingBlack) +
+      this.cornersCaptured(game, isMaximizingBlack) +
+      this.staticWeights(game, isMaximizingBlack);
+  }
 }
