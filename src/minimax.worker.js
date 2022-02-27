@@ -3,14 +3,14 @@ import * as Game from "./game.js";
 import * as Minimax from "./minimax.js"
 
 onmessage = (event) => {
-    // Retrieve game instance
-    const game = event.data.gameClone;
-    Object.setPrototypeOf(game, Game.Game.prototype);
+  // Retrieve game instance
+  const game = event.data.gameClone;
+  Object.setPrototypeOf(game, Game.Game.prototype);
 
-    // Evalute moves
-    const minimax = new Minimax.Minimax(game, event.data.depth);
+  // Evalute moves
+  const minimax = new Minimax.Minimax(game, event.data.depth, event.data.isMaximizingBlack);
 
-    const results = minimax.think();
+  const results = minimax.think();
 
-    postMessage(results);
+  postMessage(results);
 }

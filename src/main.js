@@ -1,8 +1,8 @@
 import {
-    GameMinimax
+  GameMinimax
 } from './game.minimax.js';
 
-const depth = 4;
+const depth = 0;
 const game = new GameMinimax(depth, true);
 
 // * TEST
