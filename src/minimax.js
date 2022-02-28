@@ -26,7 +26,7 @@ export class Minimax {
   minimax(game, depth, alpha, beta, maximazingPlayer) {
     // No move left or win or draw
     if (depth == 0 || game.isVictory()) {
-      return StaticEvaluation.staticEvaluation(game, this.isMaximizingBlack);
+      return StaticEvaluation.staticEvaluation(game.clone(), this.isMaximizingBlack);
     }
 
     // Legal moves

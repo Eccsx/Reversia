@@ -11,15 +11,13 @@ export default class StaticEvaluation {
   }
 
   static coinActualMobility(game, isMaximizingBlack) {
-    const gameClone = game.clone();
-
     // Count black legal moves
-    gameClone.updateSandwiches(game.BLACK_PIECE.value);
-    const blackMobility = gameClone.sandwiches.length;
+    game.updateSandwiches(game.BLACK_PIECE.value);
+    const blackMobility = game.sandwiches.length;
 
     // Count white legal moves
-    gameClone.updateSandwiches(game.WHITE_PIECE.value);
-    const whiteMobility = gameClone.sandwiches.length;
+    game.updateSandwiches(game.WHITE_PIECE.value);
+    const whiteMobility = game.sandwiches.length;
 
     // Score
     const maxPlayerMobility = isMaximizingBlack ? blackMobility : whiteMobility;
@@ -37,7 +35,7 @@ export default class StaticEvaluation {
     // Count empty space surrounding black coin
     const blackCells = game.getAllBlackCell();
 
-    let emptyBlack = [];
+    let emptyBlack = new Set();
     blackCells.forEach(cell => {
       emptyBlack = new Set([...emptyBlack, ...game.getCellEmptyNeighbors(cell)])
     });
@@ -47,7 +45,7 @@ export default class StaticEvaluation {
     // Count empty space surrounding white coin
     const whiteCells = game.getAllWhiteCell();
 
-    let emptyWhite = [];
+    let emptyWhite = new Set();
     whiteCells.forEach(cell => {
       emptyWhite = new Set([...emptyWhite, ...game.getCellEmptyNeighbors(cell)])
     });

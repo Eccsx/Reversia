@@ -38,13 +38,17 @@ export class GameMinimax extends GameGraphics {
     worker.onmessage = (event) => {
       const evals = event.data;
 
-      //! DEBUG
-      console.log(evals)
-
       // Play best move
       // https://stackoverflow.com/a/50723439/11060940
       const best = Object.entries(evals).reduce((a, b) => a[1] > b[1] ? a : b)[0];
       this.placePiece(best);
+
+      // Check skip problem to avoid color switching or double color play
+      if (this.state == this.minimaxTurn) {
+        // Block humain from playing while minimax is playing
+        this.cleanPreviousLegalMoves();
+        this.minimaxPlay();
+      }
     }
   }
 
@@ -62,7 +66,6 @@ export class GameMinimax extends GameGraphics {
     else if (this.state == this.minimaxTurn) {
       // Block humain from playing while minimax is playing
       this.cleanPreviousLegalMoves();
-
       this.minimaxPlay();
     }
   }
