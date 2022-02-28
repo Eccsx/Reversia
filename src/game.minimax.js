@@ -1,4 +1,4 @@
-import GameGraphics from './game.graphics';
+import GameGraphics from './game.graphics.js';
 
 export default class GameMinimax extends GameGraphics {
   constructor(depth, isMaximizingBlack) {
@@ -44,7 +44,7 @@ export default class GameMinimax extends GameGraphics {
       // Check skip problem to avoid color switching or double color play
       if (this.state === this.minimaxTurn) {
         // Block humain from playing while minimax is playing
-        this.cleanPreviousLegalMoves();
+        GameMinimax.cleanPreviousLegalMoves();
         this.minimaxPlay();
       }
     };

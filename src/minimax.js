@@ -1,4 +1,4 @@
-import StaticEvaluation from './static.evaluation';
+import StaticEvaluation from './static.evaluation.js';
 
 // https://youtu.be/l-hh51ncgDI
 export default class Minimax {
