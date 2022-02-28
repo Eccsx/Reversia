@@ -1,8 +1,6 @@
-import {
-  GameGraphics
-} from "./game.graphics.js";
+import GameGraphics from './game.graphics';
 
-export class GameMinimax extends GameGraphics {
+export default class GameMinimax extends GameGraphics {
   constructor(depth, isMaximizingBlack) {
     super();
 
@@ -13,7 +11,7 @@ export class GameMinimax extends GameGraphics {
     // Minimaxs play first
     if (isMaximizingBlack) {
       // Block humain from playing while minimax is playing
-      this.cleanPreviousLegalMoves();
+      GameMinimax.cleanPreviousLegalMoves();
 
       this.minimaxPlay();
     }
@@ -21,18 +19,18 @@ export class GameMinimax extends GameGraphics {
 
   minimaxPlay() {
     const gameClone = this.clone();
-    const depth = this.depth;
-    const isMaximizingBlack = this.isMaximizingBlack;
+    const { depth } = this;
+    const { isMaximizingBlack } = this;
 
     // Run minimax in a worker to avoid blocking
     const worker = new Worker('src/minimax.worker.js', {
-      type: 'module'
+      type: 'module',
     });
 
     worker.postMessage({
       gameClone,
       depth,
-      isMaximizingBlack
+      isMaximizingBlack,
     });
 
     worker.onmessage = (event) => {
@@ -40,18 +38,17 @@ export class GameMinimax extends GameGraphics {
 
       // Play best move
       // https://stackoverflow.com/a/50723439/11060940
-      const best = Object.entries(evals).reduce((a, b) => a[1] > b[1] ? a : b)[0];
+      const best = Object.entries(evals).reduce((a, b) => (a[1] > b[1] ? a : b))[0];
       this.placePiece(best);
 
       // Check skip problem to avoid color switching or double color play
-      if (this.state == this.minimaxTurn) {
+      if (this.state === this.minimaxTurn) {
         // Block humain from playing while minimax is playing
         this.cleanPreviousLegalMoves();
         this.minimaxPlay();
       }
-    }
+    };
   }
-
 
   // Override to allow minimax play
   mouseAction(move) {
@@ -59,13 +56,13 @@ export class GameMinimax extends GameGraphics {
 
     // Check victory
     if (this.isVictory()) {
-      this.endGame();
-    }
-    // Check skip problem to avoid color switching or double color play
-    // Minimaw can only play if it's it turn
-    else if (this.state == this.minimaxTurn) {
+      GameMinimax.endGame();
+    } else if (this.state === this.minimaxTurn) {
+      // Check skip problem to avoid color switching or double color play
+      // Minimaw can only play if it's it turn
+
       // Block humain from playing while minimax is playing
-      this.cleanPreviousLegalMoves();
+      GameMinimax.cleanPreviousLegalMoves();
       this.minimaxPlay();
     }
   }

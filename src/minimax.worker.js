@@ -1,6 +1,6 @@
 // https://html.spec.whatwg.org/#module-worker-example
-import * as Game from "./game.js";
-import * as Minimax from "./minimax.js"
+import * as Game from './game';
+import * as Minimax from './minimax';
 
 onmessage = (event) => {
   // Retrieve game instance
@@ -13,4 +13,4 @@ onmessage = (event) => {
   const results = minimax.think();
 
   postMessage(results);
-}
+};

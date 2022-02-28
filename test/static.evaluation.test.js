@@ -3,6 +3,9 @@
  */
 
 // Global test variables
+import Game from '../src/game.js';
+import StaticEvaluation from '../src/static.evaluation.js';
+
 let game;
 
 beforeEach(() => {
@@ -14,11 +17,6 @@ afterEach(() => {
   // restore the original func after test
   jest.resetModules();
 });
-
-import {
-  Game
-} from "../src/game.js";
-import StaticEvaluation from "../src/static.evaluation.js";
 
 test('coinParity() (1) Maximizing Black', () => {
   game.loadTranscript('c4c3d3c5b6');
@@ -59,13 +57,13 @@ test('coinActualMobility() (3) Maximizing White no more move', () => {
 test('coinPotentialMobility() (1) Maximizing Black', () => {
   game.loadTranscript('c4c3d3c5b6');
 
-  expect(StaticEvaluation.coinPotentialMobility(game, true)).toBe(100 * -4 / 28);
+  expect(StaticEvaluation.coinPotentialMobility(game, true)).toBeCloseTo(100 * -4 / 28, 5);
 });
 
 test('coinPotentialMobility() (2) Maximizing White', () => {
   game.loadTranscript('c4c3d3c5b6');
 
-  expect(StaticEvaluation.coinPotentialMobility(game, false)).toBe(100 * 4 / 28);
+  expect(StaticEvaluation.coinPotentialMobility(game, false)).toBeCloseTo(100 * 4 / 28, 5);
 });
 
 test('coinPotentialMobility() (3) Maximizing Black no more move', () => {
