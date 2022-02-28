@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable max-len */
-import GameMinimax from './game.minimax';
+import GameMinimax from './game.minimax.js';
 
 const depth = 2;
 const game = new GameMinimax(depth, true);

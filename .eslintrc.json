@@ -11,6 +11,7 @@
     "sourceType": "module"
   },
   "rules": {
-    "consistent-return": "warn"
+    "consistent-return": "warn",
+    "import/extensions": "off"
   }
 }
