@@ -5,7 +5,8 @@
   "main": "main.js",
   "scripts": {
     "test": "jest ./test",
-    "coverage": "jest --coverage ./test"
+    "coverage": "jest --coverage ./test",
+    "lint": "eslint src"
   },
   "repository": {
     "type": "git",
@@ -22,6 +23,9 @@
     "@babel/preset-env": "^7.14.5",
     "@types/jest": "^26.0.23",
     "babel-jest": "^27.0.2",
+    "eslint": "^8.10.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.25.4",
     "jest": "^27.0.4",
     "ts-jest": "^27.0.3"
   },

@@ -1,0 +1,16 @@
+name: Linting
+on: [pull_request]
+jobs:
+  eslint:
+    name: Lint code base
+    runs-on: ubuntu-18.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install packages
+        run: npm i
+
+      - name: Run ESlint
+        run: npm run lint
