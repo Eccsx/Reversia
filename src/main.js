@@ -1,9 +1,13 @@
+import { GameGraphics } from './game.graphics.js';
+import { Game } from './game.js';
 import {
-    GameMinimax
+  GameMinimax
 } from './game.minimax.js';
 
-const depth = 3;
-const game = new GameMinimax(depth, true);
+const game = new GameGraphics();
+game.loadTranscript('e6f4c3c4d3d6f6c6f5g5g6e3f2d2h5e7d7e8e2f3g4g3h4e1c5b3c7b8c1d1f1c2b4b2a1b1g2b6a4f7c8d8a3h2h3h6a7a6a5h1g1a2b5a8f8g8h7h8g7b7')
+// const depth = 2;
+// const game = new GameMinimax(depth, true);
 
 // * TEST
 
