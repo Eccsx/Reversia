@@ -1,8 +1,8 @@
-name: Linting
+name: Testing
 on: [pull_request]
 jobs:
   standard-checks:
-    name: Lint code base
+    name: Run unit tests
     runs-on: ubuntu-18.04
 
     steps:
@@ -13,4 +13,4 @@ jobs:
         run: npm ci
 
       - name: Run ESlint
-        run: npm run ci:lint
+        run: npm run ci:test

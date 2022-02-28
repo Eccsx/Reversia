@@ -4,9 +4,9 @@
   "description": "A flat-design Reversi game with AI to beat humans",
   "main": "main.js",
   "scripts": {
-    "test": "jest ./test",
+    "ci:test": "jest --ci ./test",
     "coverage": "jest --coverage ./test",
-    "lint": "eslint src"
+    "ci:lint": "eslint ./src"
   },
   "repository": {
     "type": "git",
