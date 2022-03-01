@@ -135,6 +135,9 @@ export default class Game {
   }
 
   endGame() {
+    // Clear sandwiches
+    this.sandwiches = [];
+
     // End state
     if (this.blackPiecesCount === 0) {
       this.state = this.STATE.WIN_WHITE;
@@ -305,12 +308,6 @@ export default class Game {
     // Split string in segment of two characters
     matchString.match(/.{1,2}/g).forEach((cell) => {
       this.placePiece(cell);
-
-      if (this.state === this.STATE.WIN_BLACK
-        || this.state === this.STATE.WIN_WHITE
-        || this.state === this.STATE.DRAW) {
-        throw new Error('invalid move');
-      }
     });
   }
 

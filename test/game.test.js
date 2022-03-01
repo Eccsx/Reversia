@@ -126,52 +126,6 @@ test('placePiece()', () => {
   });
 });
 
-test('isNoMoreMove() (1) possible legal moves', () => {
-  game.state = game.STATE.BLACK_TURN;
-  game.previousNoMoveCount = 0;
-  game.sandwiches = {
-    c2: ['c3'],
-  };
-
-  expect(game.isNoMoreMove()).toBeFalsy();
-  expect(game.previousNoMoveCount).toBe(0);
-  expect(game.state).toBe(game.STATE.BLACK_TURN);
-});
-
-test('isNoMoreMove() (2) skip turn', () => {
-  game.state = game.STATE.BLACK_TURN;
-  game.previousNoMoveCount = 0;
-  game.sandwiches = {};
-
-  expect(game.isNoMoreMove()).toBeFalsy();
-  expect(game.previousNoMoveCount).toBe(1);
-  expect(game.state).toBe(game.STATE.WHITE_TURN);
-});
-
-test('isNoMoreMove() (3) win', () => {
-  game.blackPiecesCount = 12;
-  game.whitePiecesCount = 8;
-  game.state = game.STATE.BLACK_TURN;
-  game.previousNoMoveCount = 1;
-  game.sandwiches = {};
-
-  expect(game.isNoMoreMove()).toBeTruthy();
-  expect(game.previousNoMoveCount).toBe(2);
-  expect(game.state).toBeTruthy(game.STATE.BLACK_WIN);
-});
-
-test('isNoMoreMove() (4) draw', () => {
-  game.blackPiecesCount = 6;
-  game.whitePiecesCount = 6;
-  game.state = game.STATE.BLACK_TURN;
-  game.previousNoMoveCount = 1;
-  game.sandwiches = {};
-
-  expect(game.isNoMoreMove()).toBeTruthy();
-  expect(game.previousNoMoveCount).toBe(2);
-  expect(game.state).toBe(game.STATE.DRAW);
-});
-
 test('isVictory() (1) Black wins', () => {
   const match = 'd3c5d6e3b4c3d2c4f4';
   game.loadTranscript(match);
@@ -196,33 +150,23 @@ test('isVictory() (3) Black win by pieces count', () => {
   expect(game.state).toBe(game.STATE.WIN_BLACK);
 });
 
-test('isVictory() (4) White win by pieces count', () => {
-  const match = 'f5d6c4d3e6f4e3f3c6b4c3c5d2c2e2e1a4d7b3g6b5f1g4b6f2a3a2a5a6c7e8d8e7f8h7b7a8f7b8c8g8a7b1c1f6a1b2g1g2h1g3h3g5h5h2h4h6d1h8g7';
+test('isVictory() (4) Draw', () => {
+  const match = 'e6f6f5d6c5g4d7c6f7b5f4e3c7e7b6d8c8b8e8f8f3g3c4c3d3g8e2f2h4g6d2h5h3g5b3e1a4c1b4h2d1a6h7f1a5g2g7c2b2a2a3h8a1h6b1b7a7a8g1h1';
   game.loadTranscript(match);
 
-  expect(game.isVictory()).toBeTruthy();
-  expect(game.state).toBe(game.STATE.WIN_WHITE);
-});
-
-test('isVictory() (5) Draw', () => {
-  const match = 'f5f6e6f4e3c5g5g3g4f3e2h6c4d6h5h4e7f2g6f7d3c6d2h3d7b3b4c8d8c3b6e8b5c7f1c2a3b2f8g8a1a2b7e1d1c1h7h8g7a8b1a6g1g2a5a7b8a4h1h2';
-  game.loadTranscript(match);
-
-  expect(game.board).toEqual([
-    [1, 1, 1, 1, 1, 1, 1, 1],
-    [2, 1, 1, 2, 2, 2, 2, 2],
-    [2, 1, 1, 1, 2, 1, 2, 2],
-    [2, 2, 2, 2, 1, 1, 2, 2],
-    [2, 2, 2, 1, 1, 1, 1, 2],
-    [2, 1, 1, 1, 2, 1, 1, 2],
-    [2, 1, 1, 1, 1, 1, 1, 2],
-    [2, 1, 2, 2, 2, 2, 2, 2],
-  ]);
   expect(game.isVictory()).toBeTruthy();
   expect(game.state).toBe(game.STATE.DRAW);
 });
 
-test('isVictory() (6) Game not finished', () => {
+test('isVictory() (4) White count after no more possible moves', () => {
+  const match = 'f5d6c3d3c4f4c5b3c2e6c6b4b5d2e3a6f3b6d1f6f7c1b1g6a3f8a5e2f2g5h6h4d7a4e7c8d8e8c7a2h7h5h3b2a7a8g7h8g8b8b7g4g3h2g1f1e1h1g2';
+  game.loadTranscript(match);
+
+  expect(game.isVictory()).toBeFalsy();
+  expect(game.state).toBe(game.STATE.WIN_WHITE);
+});
+
+test('loadTranscript() (1) valid sequence', () => {
   const match = 'f5f6e6f4e3c5g5g3';
   game.loadTranscript(match);
 
@@ -236,23 +180,58 @@ test('isVictory() (6) Game not finished', () => {
     [0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0],
   ]);
-  expect(game.isVictory()).toBeFalsy();
   expect(game.state).toBe(game.STATE.BLACK_TURN);
 });
 
-test('loadTranscript()', () => {
-  const match = 'f5f6e6f4e3c5g5g3';
-  game.loadTranscript(match);
+test('isNoMove() (1) possible legal moves', () => {
+  game.loadTranscript('d3e3f3e2f4g3h3h2h1g4g2g1h5h4d6h6h7e6f2c2f1');
 
-  expect(game.board).toEqual([
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 1, 0, 2, 0],
-    [0, 0, 0, 2, 1, 2, 0, 0],
-    [0, 0, 2, 2, 2, 2, 1, 0],
-    [0, 0, 0, 0, 1, 2, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-  ]);
-  expect(game.state).toBe(game.STATE.BLACK_TURN);
+  expect(game.isNoMove()).toBeFalsy();
+});
+
+test('isNoMove() (2) no legal moves', () => {
+  game.loadTranscript('d3c5d6e3b4c3d2c4f4');
+
+  expect(game.isNoMove()).toBeTruthy();
+});
+
+test('getAllBlackCell()', () => {
+  game.loadTranscript('d3e3f3e2f4g3h3h2h1g4g2g1h5h4d6h6h7e6f2c2f1');
+
+  expect(game.getAllBlackCell()).toMatchObject(
+    [
+      'f1', 'g1', 'h1',
+      'f2', 'g2', 'h2',
+      'e3', 'f3', 'g3', 'h3',
+      'd4', 'f4', 'h4',
+      'd5', 'h5',
+      'd6', 'h6',
+      'h7',
+    ],
+  );
+});
+
+test('getAllWhiteCell()', () => {
+  game.loadTranscript('d3e3f3e2f4g3h3h2h1g4g2g1h5h4d6h6h7e6f2c2f1');
+
+  expect(game.getAllWhiteCell()).toMatchObject(
+    [
+      'c2', 'e2',
+      'd3',
+      'e4', 'g4',
+      'e5', 'e6',
+    ],
+  );
+});
+
+test('getNumberPieceInCorner() (1) Black', () => {
+  game.loadTranscript('e6f4c3c4d3d6f6c6f5g5g6e3f2d2h5e7d7e8e2f3g4g3h4e1c5b3c7b8c1d1f1c2b4b2a1b1g2b6a4f7c8d8a3h2h3h6a7a6a5h1g1a2b5a8f8g8h7h8g7b7');
+
+  expect(game.getNumberPieceInCorner(game.BLACK_PIECE.value)).toBe(1);
+});
+
+test('getNumberPieceInCorner() (1) White', () => {
+  game.loadTranscript('e6f4c3c4d3d6f6c6f5g5g6e3f2d2h5e7d7e8e2f3g4g3h4e1c5b3c7b8c1d1f1c2b4b2a1b1g2b6a4f7c8d8a3h2h3h6a7a6a5h1g1a2b5a8f8g8h7h8g7b7');
+
+  expect(game.getNumberPieceInCorner(game.WHITE_PIECE.value)).toBe(3);
 });
