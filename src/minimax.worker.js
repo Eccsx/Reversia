@@ -9,7 +9,6 @@ onmessage = (event) => {
 
   // Evalute moves
   const minimax = new Minimax(game, event.data.depth, event.data.isMaximizingBlack);
-
   const results = minimax.think();
 
   postMessage(results);

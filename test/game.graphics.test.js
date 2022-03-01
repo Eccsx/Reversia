@@ -108,7 +108,7 @@ test('constructor', () => {
     .toMatchObject(game.BLACK_PIECE.phantom);
 });
 
-test('placePiece()', () => {
+test('placePiece() & mouseAction()', () => {
   // Play black
   game.placePiece('d3');
 
@@ -179,7 +179,7 @@ test('placePiece()', () => {
     .toBe(0);
 
   // Play white
-  game.placePiece('e3');
+  game.mouseAction('e3');
 
   // Pieces
   expect(document.getElementById('d3').children.length)
@@ -264,20 +264,68 @@ test('placePiece()', () => {
     .toBe(0);
 });
 
-test('endGame()', () => {
-  game.placePiece('f5');
-  game.placePiece('f6');
-  GameGraphics.endGame();
+test('updateBoardElements()', () => {
+  const cells = ['a1', 'a2'];
 
-  expect(document.getElementsByClassName('legal').length)
+  // New piece elements
+  game.board = [
+    [1, 0, 0, 0, 0, 0, 0, 0],
+    [2, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 2, 1, 0, 0, 0],
+    [0, 0, 0, 1, 2, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+  ];
+  game.updateBoardElements(cells);
+
+  expect(document.getElementById('a1').children.length)
+    .toBe(1);
+  expect(document.getElementById('a1').firstChild)
+    .toMatchObject(game.BLACK_PIECE.element);
+  expect(document.getElementById('a2').children.length)
+    .toBe(1);
+  expect(document.getElementById('a2').firstChild)
+    .toMatchObject(game.WHITE_PIECE.element);
+
+  // Remove cell elements
+  game.board = [
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 2, 1, 0, 0, 0],
+    [0, 0, 0, 1, 2, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+  ];
+  game.updateBoardElements(cells);
+
+  expect(document.getElementById('a1').children.length)
+    .toBe(0);
+  expect(document.getElementById('a2').children.length)
     .toBe(0);
 });
 
-test('loadTranscript()', () => {
+test('endGame()', () => {
+  game.placePiece('f5');
+  game.placePiece('f6');
+  game.endGame();
+
+  expect(document.getElementsByClassName('legal').length).toBe(0);
+});
+
+test('loadTranscript() (1) Win by only color left', () => {
   game.loadTranscript('e6f4e3f6g5d6e7f5c5');
 
-  expect(document.getElementsByClassName('legal').length)
-    .toBe(0);
+  expect(document.getElementsByClassName('legal').length).toBe(0);
+});
+
+test('loadTranscript() (1) Win by count after no possible moves left', () => {
+  game.loadTranscript('f5d6c3d3c4f4c5b3c2e6c6b4b5d2e3a6f3b6d1f6f7c1b1g6a3f8a5e2f2g5h6h4d7a4e7c8d8e8c7a2h7h5h3b2a7a8g7h8g8b8b7g4g3h2g1f1e1h1g2');
+
+  expect(document.getElementsByClassName('legal').length).toBe(0);
 });
 
 test('enableStrategyLayout()', () => {

@@ -37,10 +37,69 @@ export default class GameGraphics extends Game {
   }
 
   placePiece(cell) {
-    const cellsToUpdate = super.placePiece(cell);
+    // Add piece value in board
+    const pieceValue = (this.state === this.STATE.BLACK_TURN)
+      ? this.BLACK_PIECE.value
+      : this.WHITE_PIECE.value;
 
-    // Update graphics
+    const index = Game.cellToIndex(cell);
+    this.board[index[0]][index[1]] = pieceValue;
+
+    // Update piece count
+    if (this.state === this.STATE.BLACK_TURN) {
+      this.blackPiecesCount += 1;
+    } else {
+      this.whitePiecesCount += 1;
+    }
+
+    // Cells element that will need to be updated
+    const cellsToUpdate = [cell];
+
+    // Flip pieces in sandwich
+    this.sandwiches[cell].forEach((cellToSwitch) => {
+      const pieceIndex = Game.cellToIndex(cellToSwitch);
+
+      if (this.state === this.STATE.BLACK_TURN) {
+        this.board[pieceIndex[0]][pieceIndex[1]] = this.BLACK_PIECE.value;
+
+        // Update piece counters
+        this.blackPiecesCount += 1;
+        this.whitePiecesCount -= 1;
+      } else {
+        this.board[pieceIndex[0]][pieceIndex[1]] = this.WHITE_PIECE.value;
+
+        // Update piece counters
+        this.whitePiecesCount += 1;
+        this.blackPiecesCount -= 1;
+      }
+
+      cellsToUpdate.push(cellToSwitch);
+    });
+
     this.updateBoardElements(cellsToUpdate);
+
+    // After-placement verifications
+    if (this.isVictory()) {
+      this.endGame();
+      return;
+    }
+
+    // Next player to play
+    this.updateSurroundingCell(cell);
+    this.switchPlayerTurn();
+
+    if (this.isNoMove()) {
+      this.switchPlayerTurn();
+      if (this.isNoMove()) {
+        this.endGame();
+      }
+    }
+
+    this.displayLegalMoves();
+  }
+
+  switchPlayerTurn() {
+    super.switchPlayerTurn();
     this.displayLegalMoves();
   }
 
@@ -51,7 +110,7 @@ export default class GameGraphics extends Game {
       GameGraphics.cleanCell(cellElement);
 
       // Update piece
-      const pieceIndex = GameGraphics.cellToIndex(cell);
+      const pieceIndex = Game.cellToIndex(cell);
 
       if (this.board[pieceIndex[0]][pieceIndex[1]] === 1) {
         cellElement.appendChild(this.BLACK_PIECE.element.cloneNode());
@@ -92,14 +151,10 @@ export default class GameGraphics extends Game {
 
   mouseAction(move) {
     this.placePiece(move);
-
-    // Check victory
-    if (this.isVictory()) {
-      GameGraphics.endGame();
-    }
   }
 
-  static endGame() {
+  endGame() {
+    super.endGame();
     GameGraphics.cleanPreviousLegalMoves();
   }
 

@@ -11,7 +11,7 @@ export default class GameMinimax extends GameGraphics {
     // Minimaxs play first
     if (isMaximizingBlack) {
       // Block humain from playing while minimax is playing
-      GameMinimax.cleanPreviousLegalMoves();
+      GameGraphics.cleanPreviousLegalMoves();
 
       this.minimaxPlay();
     }
@@ -23,9 +23,7 @@ export default class GameMinimax extends GameGraphics {
     const { isMaximizingBlack } = this;
 
     // Run minimax in a worker to avoid blocking
-    const worker = new Worker('src/minimax.worker.js', {
-      type: 'module',
-    });
+    const worker = new Worker('src/minimax.worker.js', { type: 'module' });
 
     worker.postMessage({
       gameClone,
@@ -54,13 +52,8 @@ export default class GameMinimax extends GameGraphics {
   mouseAction(move) {
     this.placePiece(move);
 
-    // Check victory
-    if (this.isVictory()) {
-      GameMinimax.endGame();
-    } else if (this.state === this.minimaxTurn) {
-      // Check skip problem to avoid color switching or double color play
-      // Minimaw can only play if it's it turn
-
+    // Ensure minimax plays only on its turn
+    if (this.state === this.minimaxTurn) {
       // Block humain from playing while minimax is playing
       GameMinimax.cleanPreviousLegalMoves();
       this.minimaxPlay();
