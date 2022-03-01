@@ -73,9 +73,6 @@ export default class Game {
       this.whitePiecesCount += 1;
     }
 
-    // Cells element that will need to be updated
-    const cellsToUpdate = [cell];
-
     // Flip pieces in sandwich
     this.sandwiches[cell].forEach((cellToSwitch) => {
       const pieceIndex = Game.cellToIndex(cellToSwitch);
@@ -93,92 +90,64 @@ export default class Game {
         this.whitePiecesCount += 1;
         this.blackPiecesCount -= 1;
       }
-
-      cellsToUpdate.push(cellToSwitch);
     });
 
+    // After-placement verifications
+    if (this.isVictory()) {
+      this.endGame();
+      return;
+    }
+
+    // Next player to play
     this.updateSurroundingCell(cell);
-    this.updateSandwiches(
-      (this.state === this.STATE.BLACK_TURN)
-        ? this.WHITE_PIECE.value
-        : this.BLACK_PIECE.value,
-    );
-
-    if (!this.isVictory()) {
-      this.switchPlayerTurn();
-      this.isNoMoreMove();
-    }
-
-    return cellsToUpdate;
-  }
-
-  isNoMoreMove() {
-    if (Object.keys(this.sandwiches).length === 0) {
-      this.skipPlayerTurn();
-    } else {
-      this.previousNoMoveCount = 0;
-    }
-
-    if (this.previousNoMoveCount === 2) {
-      // Effective draw
-      if (this.blackPiecesCount === this.whitePiecesCount) {
-        this.state = this.STATE.DRAW;
-      } else {
-        // Win by pieces count
-        this.state = (this.blackPiecesCount > this.whitePiecesCount)
-          ? this.STATE.WIN_BLACK
-          : this.STATE.WIN_WHITE;
-      }
-
-      return true;
-    }
-
-    return false;
-  }
-
-  skipPlayerTurn() {
-    this.previousNoMoveCount += 1;
-    this.updateSandwiches(
-      (this.state === this.STATE.BLACK_TURN) ? this.WHITE_PIECE.value : this.BLACK_PIECE.value,
-    );
     this.switchPlayerTurn();
+
+    if (this.isNoMove()) {
+      this.switchPlayerTurn();
+      if (this.isNoMove()) {
+        this.endGame();
+      }
+    }
+  }
+
+  isNoMove() {
+    return Object.keys(this.sandwiches).length === 0;
   }
 
   switchPlayerTurn() {
+    // Switch state
     this.state = (this.state === this.STATE.BLACK_TURN)
       ? this.STATE.WHITE_TURN
       : this.STATE.BLACK_TURN;
+
+    // Find color sandwiches
+    this.updateSandwiches(
+      (this.state === this.STATE.BLACK_TURN)
+        ? this.BLACK_PIECE.value
+        : this.WHITE_PIECE.value,
+    );
   }
 
   isVictory() {
-    // White
+    return this.blackPiecesCount === 0
+    || this.whitePiecesCount === 0
+    || (this.blackPiecesCount + this.whitePiecesCount) === 64;
+  }
+
+  endGame() {
+    // End state
     if (this.blackPiecesCount === 0) {
       this.state = this.STATE.WIN_WHITE;
-      return true;
-    }
-
-    // Black
-    if (this.whitePiecesCount === 0) {
+    } else if (this.whitePiecesCount === 0) {
       this.state = this.STATE.WIN_BLACK;
-      return true;
+    } else if (this.blackPiecesCount === this.whitePiecesCount) {
+      this.state = this.STATE.DRAW;
+    } else {
+      // Win by pieces count
+      this.state = (this.blackPiecesCount > this.whitePiecesCount)
+        ? this.STATE.WIN_BLACK
+        : this.STATE.WIN_WHITE;
     }
-
-    // No more empty cell
-    if ((this.blackPiecesCount + this.whitePiecesCount) === 64) {
-      // Effective draw
-      if (this.blackPiecesCount === this.whitePiecesCount) {
-        this.state = this.STATE.DRAW;
-      } else {
-        // Win by pieces count
-        this.state = (this.blackPiecesCount > this.whitePiecesCount)
-          ? this.STATE.WIN_BLACK
-          : this.STATE.WIN_WHITE;
-      }
-
-      return true;
-    }
-
-    return false;
   }
 
   getCellEmptyNeighbors(cell) {
@@ -336,6 +305,12 @@ export default class Game {
     // Split string in segment of two characters
     matchString.match(/.{1,2}/g).forEach((cell) => {
       this.placePiece(cell);
+
+      if (this.state === this.STATE.WIN_BLACK
+        || this.state === this.STATE.WIN_WHITE
+        || this.state === this.STATE.DRAW) {
+        throw new Error('invalid move');
+      }
     });
   }
 
