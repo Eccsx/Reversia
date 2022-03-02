@@ -6,7 +6,6 @@ import GameMinimax from './game.minimax.js';
 
 // // const depth = 2;
 const game = new GameGraphics();
-game.switchPlayerTurn();
 // const game = new GameMinimax(2, true);
 
 // res -> https://www.worldothello.org/ratings/player?searchPlayerInput=SCHOTTE+Tom
