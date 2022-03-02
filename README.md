@@ -4,6 +4,10 @@
 
 [![javascript](https://badges.aleen42.com/src/javascript.svg)](https://developer.mozilla.org/fr/docs/Web/JavaScript)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/Eccsx/ReversAi.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Eccsx/ReversAi/alerts/)
+[![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/Eccsx/ReversAi.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Eccsx/ReversAi/context:javascript)
+[![Linting](https://github.com/Eccsx/ReversAi/actions/workflows/lint.yml/badge.svg)](https://github.com/Eccsx/ReversAi/actions/workflows/lint.yml)
+[![Testing](https://github.com/Eccsx/ReversAi/actions/workflows/test.yml/badge.svg)](https://github.com/Eccsx/ReversAi/actions/workflows/test.yml)
 
 <!-- PROJECT LOGO -->
 
