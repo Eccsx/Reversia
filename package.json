@@ -1,5 +1,5 @@
 {
-  "name": "reversia",
+  "name": "reversai",
   "version": "1.0.0",
   "description": "A flat-design Reversi game with AI to beat humans",
   "main": "main.js",
