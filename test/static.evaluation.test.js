@@ -21,25 +21,25 @@ afterEach(() => {
 test('coinParity() (1) Maximizing Black', () => {
   game.loadTranscript('c4c3d3c5b6');
 
-  expect(StaticEvaluation.coinParity(game, true)).toBe(100 * 1 / 9);
+  expect(StaticEvaluation.coinParity(game, true)).toBe(100 * (1 / 9));
 });
 
 test('coinParity() (2) Maximizing White', () => {
   game.loadTranscript('c4c3d3c5b6');
 
-  expect(StaticEvaluation.coinParity(game, false)).toBe(100 * -1 / 9);
+  expect(StaticEvaluation.coinParity(game, false)).toBe(100 * (-1 / 9));
 });
 
 test('coinActualMobility() (1) Maximizing Black', () => {
   game.loadTranscript('c4c3d3c5b6');
 
-  expect(StaticEvaluation.coinActualMobility(game, true)).toBe(100 * 3 / 17);
+  expect(StaticEvaluation.coinActualMobility(game, true)).toBe(100 * (3 / 17));
 });
 
 test('coinActualMobility() (2) Maximizing White', () => {
   game.loadTranscript('c4c3d3c5b6');
 
-  expect(StaticEvaluation.coinActualMobility(game, false)).toBe(100 * -3 / 17);
+  expect(StaticEvaluation.coinActualMobility(game, false)).toBe(100 * (-3 / 17));
 });
 
 test('coinActualMobility() (3) Maximizing Black no more move', () => {
@@ -57,13 +57,13 @@ test('coinActualMobility() (3) Maximizing White no more move', () => {
 test('coinPotentialMobility() (1) Maximizing Black', () => {
   game.loadTranscript('c4c3d3c5b6');
 
-  expect(StaticEvaluation.coinPotentialMobility(game, true)).toBeCloseTo(100 * -4 / 28, 5);
+  expect(StaticEvaluation.coinPotentialMobility(game, true)).toBeCloseTo(100 * (-4 / 28), 5);
 });
 
 test('coinPotentialMobility() (2) Maximizing White', () => {
   game.loadTranscript('c4c3d3c5b6');
 
-  expect(StaticEvaluation.coinPotentialMobility(game, false)).toBeCloseTo(100 * 4 / 28, 5);
+  expect(StaticEvaluation.coinPotentialMobility(game, false)).toBeCloseTo(100 * (4 / 28), 5);
 });
 
 test('coinPotentialMobility() (3) Maximizing Black no more move', () => {
@@ -93,13 +93,13 @@ test('cornersCaptured() (2) Maximizing White no corner on board', () => {
 test('cornersCaptured() (3) Maximizing Black corner on board', () => {
   game.loadTranscript('f5d6c4d3e6f4e3f3c6b4c3c5d2c2e2e1a4d7b3g6b5f1g4b6f2a3a2a5a6c7e8d8e7f8h7b7a8f7b8c8g8a7b1c1f6a1b2g1g2h1g3h3g5h5h2h4h6d1h8g7');
 
-  expect(StaticEvaluation.cornersCaptured(game, true)).toBe(100 * -2 / 4);
+  expect(StaticEvaluation.cornersCaptured(game, true)).toBe(100 * (-2 / 4));
 });
 
 test('cornersCaptured() (4) Maximizing White corner on board', () => {
   game.loadTranscript('f5d6c4d3e6f4e3f3c6b4c3c5d2c2e2e1a4d7b3g6b5f1g4b6f2a3a2a5a6c7e8d8e7f8h7b7a8f7b8c8g8a7b1c1f6a1b2g1g2h1g3h3g5h5h2h4h6d1h8g7');
 
-  expect(StaticEvaluation.cornersCaptured(game, false)).toBe(100 * 2 / 4);
+  expect(StaticEvaluation.cornersCaptured(game, false)).toBe(100 * (2 / 4));
 });
 
 test('staticWeights() (1) Maximizing Black', () => {
@@ -114,16 +114,32 @@ test('staticWeights() (2) Maximizing White', () => {
   expect(StaticEvaluation.staticWeights(game, false)).toBe(2);
 });
 
-test('staticEvaluation() (1) Maximizing Black', () => {
+test('evaluation() (1) Maximizing Black', () => {
   game.loadTranscript('c4c3d3c5b6');
 
-  expect(StaticEvaluation.staticEvaluation(game, true))
+  expect(StaticEvaluation.evaluation(game, true))
     .toBeCloseTo(100 * ((1 / 9) + (3 / 17) + (-4 / 28)) + 0 + -2, 5);
 });
 
 test('staticEvaluation() (2) Maximizing White', () => {
   game.loadTranscript('c4c3d3c5b6');
 
-  expect(StaticEvaluation.staticEvaluation(game, false))
+  expect(StaticEvaluation.evaluation(game, false))
     .toBeCloseTo(100 * ((-1 / 9) + (-3 / 17) + (4 / 28)) + 0 + 2, 5);
+});
+
+test('weightedEvaluation() (1) Maximizing Black', () => {
+  const weights = [1, 2, 3, 4, 5];
+  game.loadTranscript('c4c3d3c5b6');
+
+  expect(StaticEvaluation.weightedEvaluation(game, true, weights))
+    .toBeCloseTo(100 * (1 * (1 / 9) + 2 * (3 / 17) + 3 * (-4 / 28)) + (4 * 0) + (5 * -2), 5);
+});
+
+test('weightedEvaluation() (2) Maximizing White', () => {
+  const weights = [1, 2, 3, 4, 5];
+  game.loadTranscript('c4c3d3c5b6');
+
+  expect(StaticEvaluation.weightedEvaluation(game, false, weights))
+    .toBeCloseTo(100 * (1 * (-1 / 9) + 2 * (-3 / 17) + 3 * (4 / 28)) + (4 * 0) + (5 * 2), 5);
 });

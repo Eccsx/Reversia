@@ -6,7 +6,7 @@
   "scripts": {
     "ci:test": "jest --ci ./test",
     "coverage": "jest --coverage ./test",
-    "ci:lint": "eslint ./src"
+    "ci:lint": "eslint ./src ./test"
   },
   "repository": {
     "type": "git",
@@ -32,6 +32,5 @@
   },
   "dependencies": {
     "@babel/core": "^7.14.6"
-  },
-  "type": "module"
+  }
 }

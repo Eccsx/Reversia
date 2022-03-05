@@ -12,9 +12,9 @@
     "sourceType": "module"
   },
   "rules": {
-    "consistent-return": "warn",
-    "import/extensions": "warn",
-    "class-methods-use-this": "warn"
+    "consistent-return": "off",
+    "import/extensions": "off",
+    "class-methods-use-this": "off"
   },
   "plugins": [
     "jest"
