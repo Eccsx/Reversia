@@ -13,7 +13,8 @@
   },
   "rules": {
     "consistent-return": "warn",
-    "import/extensions": "off"
+    "import/extensions": "warn",
+    "class-methods-use-this": "warn"
   },
   "plugins": [
     "jest"
