@@ -235,3 +235,19 @@ test('getNumberPieceInCorner() (1) White', () => {
 
   expect(game.getNumberPieceInCorner(game.WHITE_PIECE.value)).toBe(3);
 });
+
+test('clone()', () => {
+  game.loadTranscript('e6f4c3c4d3d6f6c6f5g5g6e3f2d2h5e7d7e8e2f3g4g3h4');
+  const gameClone = game.clone();
+
+  expect(gameClone.board).toMatchObject(game.board);
+  expect(gameClone.board === game.board).toBeFalsy();
+  expect(gameClone.blackPiecesCount).toEqual(game.blackPiecesCount);
+  expect(gameClone.whitePiecesCount).toEqual(game.whitePiecesCount);
+  expect(gameClone.surroundingCells).toMatchObject(game.surroundingCells);
+  expect(gameClone.surroundingCells === game.surroundingCells).toBeFalsy();
+  expect(gameClone.state).toEqual(game.state);
+  expect(gameClone.sandwiches).toMatchObject(game.sandwiches);
+  expect(gameClone.sandwiches === game.sandwiches).toBeFalsy();
+  expect(gameClone.previousNoMoveCount).toEqual(game.previousNoMoveCount);
+});

@@ -354,19 +354,23 @@ export default class Game {
     return count;
   }
 
-  /* istanbul ignore next */
-  // StructuredClone is not supported in Node.js
   clone() {
     const gameClone = new Game();
 
     // Clone properties without reference
-    gameClone.board = structuredClone(this.board);
-    gameClone.blackPiecesCount = structuredClone(this.blackPiecesCount);
-    gameClone.whitePiecesCount = structuredClone(this.whitePiecesCount);
-    gameClone.surroundingCells = structuredClone(this.surroundingCells);
-    gameClone.state = structuredClone(this.state);
-    gameClone.sandwiches = structuredClone(this.sandwiches);
-    gameClone.previousNoMoveCount = structuredClone(this.previousNoMoveCount);
+    gameClone.board = JSON.parse(JSON.stringify(this.board));
+    gameClone.blackPiecesCount = this.blackPiecesCount;
+    gameClone.whitePiecesCount = this.whitePiecesCount;
+    gameClone.surroundingCells = new Set(this.surroundingCells);
+    gameClone.state = this.state;
+
+    gameClone.sandwiches = [];
+    Object.keys(this.sandwiches).forEach((move) => {
+      gameClone.sandwiches[move] = [...this.sandwiches[move]];
+    });
+    gameClone.sandwiches.length = this.sandwiches.length;
+
+    gameClone.previousNoMoveCount = this.previousNoMoveCount;
 
     return gameClone;
   }

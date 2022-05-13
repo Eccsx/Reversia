@@ -110,11 +110,13 @@ export default class GeneticEvaluationWeigth {
     }
 
     // Score based on chess standard
-    // Win: +1 Draw: 0.5 Lose: 0
+    // Win: +1 Draw: +0.5 Lose: +0
     if (game.state !== game.STATE.WIN_BLACK) {
+      // Player1 won
       return [1, 0];
     }
     if (game.state !== game.STATE.WIN_WHITE) {
+      // Player2 won
       return [0, 1];
     } if (game.state !== game.STATE.DRAW) {
       return [0.5, 0.5];
@@ -174,10 +176,10 @@ export default class GeneticEvaluationWeigth {
     return [offspring1, offspring2];
   }
 
-  mutate(offspring, probability) {
+  mutate(offspring) {
     const off = offspring;
     for (let i = 0; i < offspring.length; i += 1) {
-      if (Math.random() <= probability) {
+      if (Math.random() <= this.mutationProbability) {
         off[i] = Math.floor(Math.random() * 101);
       }
     }
