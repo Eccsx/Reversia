@@ -21,7 +21,7 @@
     <p align="center">
         Algorithm-powered Othello program
         <br />
-        <a href="https://eccsx.github.io/ReversAi/">View</a>
+        <a href="https://luunynliny.github.io/ReversAi/">View</a>
     </p>
 </div>
 
